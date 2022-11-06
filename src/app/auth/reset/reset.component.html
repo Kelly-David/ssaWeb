@@ -1,0 +1,33 @@
+<div class="container">
+    <h4>Reset password</h4>
+    <div class="line-nospacing"></div>
+
+
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-8">
+
+            <app-alert-warning [text]="errorMessage!"></app-alert-warning>
+            <app-alert-info *ngIf="resetSent" [text]="infoMessage"></app-alert-info>
+
+            <form class="mb-3" *ngIf="!resetSent" [formGroup]="form" (ngSubmit)="Submit()">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="formEmail">Email</span>
+                    <input type="email" class="form-control" aria-describedby="formEmail" formControlName="FormEmail"
+                        (click)="errorMessage = undefined">
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
+                </div>
+            </form>
+
+            <p class="text-center mt-5">Don't want to reset your password? <a [routerLink]="['/sign-in']"><b>Click here
+                        to sign
+                        in.</b></a></p>
+
+            <p class="text-center mt-3"><small>By signing up, you agree to our Terms of Service & Privacy
+                    Policy.</small></p>
+
+        </div>
+    </div>
+
+</div>

@@ -4,8 +4,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { AuthModule } from '@angular/fire/auth';
 import { NavigationModule } from './navigation/navigation.module';
+import { AuthModule } from './auth/auth.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { NavigationModule } from './navigation/navigation.module';
     CoreModule,
     BrowserAnimationsModule, 
     AuthModule,
-    NavigationModule
+    NavigationModule,
+    DashboardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
