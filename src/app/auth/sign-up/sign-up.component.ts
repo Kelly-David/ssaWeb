@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Credentials } from '../../shared/models/credentials';
 import { take } from 'rxjs/operators';
@@ -20,7 +19,6 @@ export class SignUpComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
     private userService: UserService,
     private router: Router
   ) {
@@ -35,7 +33,7 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.authService.user.pipe(take(1)).subscribe(user => {
+    this.userService.LoggedInUser.pipe(take(1)).subscribe(user => {
       if (user) {
         console.log(user);
         this.router.navigate(['/auth/']);
@@ -69,11 +67,12 @@ export class SignUpComponent implements OnInit {
     let fName = this.FormFirstName;
     let lName = this.FormLastName;
 
-    if (await this.authService.SignUpWithEmailAndPassword(credentials, fName, lName)) {
-      console.log("success")
+    if (await this.userService.SignUpWithEmailAndPassword(credentials, fName, lName)) {
+      //this.router.navigate(['/auth/']);
     }
     else {
-      console.log("failed")
+      this.errorMessage = "Your registration could not be completed at this time. Please contact your system administrator."
+      this.Cancel();
     }
   }
 
