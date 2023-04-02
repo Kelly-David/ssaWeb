@@ -16,91 +16,64 @@ export class UserService {
 
   public LoggedInUser: Observable<User | null>;
 
-  constructor(
-    private firestore: Firestore,
-    private auth: Auth
-  ) {
+  constructor(private firestore: Firestore, private auth: Auth) {
     this.LoggedInUser = this.GetLoggedInUser();
   }
 
+  // region Public Methods -----------------------------------------------------------------------------------------------
+
+  /// Fetch the logged in user from the Users collection
   private GetLoggedInUser() {
 
     const authUser = user(this.auth);
 
     return authUser.pipe(switchMap(user => {
-       
       if (user) {
-
         const userDocument = doc(this.firestore, Strings.UsersCollection, user.uid);
-
         const docSnap = getDoc(userDocument);
-
         return docSnap.then((value: DocumentSnapshot) => {
           if (value.exists()) {
-
             let userDoc = value.data() as User;
-
             return new User(userDoc);
           }
           else {
             return null;
           }
-        })        
+        })
       }
       return of(null) as Observable<null>;
     }))
   }
 
-  public GetUsersAsync(role: string, startIndex: number = 0, lim: number = 20 ) : Observable<User[]> {
+  /// Query the Users collection
+  public GetUsersAsync(role: string, startIndex: number = 0, lim: number = 20): Observable<User[]> {
 
     const usersCollection = collection(this.firestore, Strings.UsersCollection);
     const userQuery = query(usersCollection, where("Role", "==", role), orderBy("FirstName"), startAt(startIndex), limit(lim));
 
     return collectionData(userQuery).pipe(map(documents => {
       let users = documents;
-
       return users.map(document => {
         return new User(document as User);
       })
     }));
   }
 
-  public GetStaffUsersAsync() {
-
-    const collectionRef = collection(this.firestore, Strings.UsersCollection);
-
-    const q = query(collectionRef, where("Role", "==", "Staff"));
-
-    return collectionData(collectionRef).pipe(map(docs => {
-
-        let users = docs;
-
-        return users.map(doc => {
-
-          let user = doc as User;
-
-          return new User(user);
-        })
-      }))
-  }
-
+  /// Fetch the PermittedEmails collection
   public GetPermittedEmailsAsync() {
 
     const collectionRef = collection(this.firestore, Strings.PermittedEmailsCollection);
 
     return collectionData(collectionRef).pipe(map(docs => {
-      
       let users = docs as DocumentChangeAction<PermittedEmail>[];
-
       return users.map(doc => {
-
         let user = doc.payload.doc.data() as PermittedEmail;
-
         return user as PermittedEmail;
       })
     }))
   }
 
+  /// Returns true if the user email is permitted
   public async IsUserEmailPermitted(email: string): Promise<boolean> {
 
     const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, email);
@@ -112,18 +85,20 @@ export class UserService {
     return false;
   }
 
+  /// Fetch a PermittedEmail by Email Address
   public async GetPermittedEmailData(email: string): Promise<PermittedEmail | null> {
 
     const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, email);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      
+
       return docSnap.data() as PermittedEmail;
     }
     return null;
   }
 
+  /// Create a new auth User and User in the User collection
   public async SignUpWithEmailAndPassword(credentials: Credentials, firstName: string, lastName: string): Promise<boolean> {
 
     if (this.ValidateCredentials(credentials)) {
@@ -131,19 +106,14 @@ export class UserService {
       if (await this.IsUserEmailPermitted(credentials.Email)) {
 
         try {
-
           let result!: UserCredential | undefined;
 
           result = await createUserWithEmailAndPassword(this.auth, credentials.Email, credentials.Password);
 
           if (result?.user) {
-
             let authUser = result?.user;
-
             let emailData = await this.GetPermittedEmailData(authUser.email!);
-
             let role = emailData != null && emailData.Role != undefined ? emailData.Role : UserRole.Staff;
-
             let permissions = emailData != null && emailData.Permissions != undefined ? emailData.Permissions : { Reader: true, Editor: true, Admin: false };
 
             let model = {
@@ -157,18 +127,13 @@ export class UserService {
             } as User;
 
             const user = new User(model);
-
             this.SetupNewUser(user);
-
             this.SetPermittedEmailSignedUp(credentials.Email);
-
             return true;
           }
 
         } catch (error) {
-
           console.log((error as Error).message)
-
           return false;
         }
       }
@@ -176,6 +141,7 @@ export class UserService {
     return false;
   }
 
+  /// Sign In a User with Email and Password
   public async SignInWithEmailAndPassword(credentials: Credentials): Promise<boolean> {
 
     if (this.ValidateCredentials(credentials)) {
@@ -195,6 +161,7 @@ export class UserService {
     return false;
   }
 
+  /// Send a password reset email
   public async ResetPassword(email: string): Promise<string> {
 
     return await sendPasswordResetEmail(this.auth, email)
@@ -203,9 +170,30 @@ export class UserService {
       });
   }
 
+  /// Sign Out a User
   public SignOut(): Promise<void> {
     return signOut(this.auth);
   }
+
+  /// Check is a user has read access
+  public CanRead(user: User): boolean {
+    const allowed = ['Reader'];
+    return this.CheckUserAuthorization(user, allowed);
+  }
+
+  /// Check if user has editor access
+  public CanEdit(user: User): boolean {
+    const allowed = ['Admin', 'Editor'];
+    return this.CheckUserAuthorization(user, allowed);
+  }
+
+  /// Check if user has admin access
+  public CanDelete(user: User): boolean {
+    const allowed = ['Admin'];
+    return this.CheckUserAuthorization(user, allowed);
+  }
+
+  // region Private Methods -----------------------------------------------------------------------------------------------
 
   private CheckUserAuthorization(user: User, allowedPermissions: string[]): boolean {
     if (!user) {
@@ -222,21 +210,6 @@ export class UserService {
     return false;
   }
 
-  public CanRead(user: User): boolean {
-    const allowed = ['Reader'];
-    return this.CheckUserAuthorization(user, allowed);
-  }
-
-  public CanEdit(user: User): boolean {
-    const allowed = ['Admin', 'Editor'];
-    return this.CheckUserAuthorization(user, allowed);
-  }
-
-  public CanDelete(user: User): boolean {
-    const allowed = ['Admin'];
-    return this.CheckUserAuthorization(user, allowed);
-  }
-
   private ValidateCredentials(credentials: Credentials): boolean {
 
     if (!Boolean(credentials.Email) || !Boolean(credentials.Password)) {
@@ -246,14 +219,14 @@ export class UserService {
     return true;
   }
 
-  public SetupNewUser(user: User) {
+  private SetupNewUser(user: User) {
 
     const docRef = doc(this.firestore, Strings.UsersCollection, user.Id);
 
-    setDoc(docRef, <User> user.ToPlainObj);
+    setDoc(docRef, <User>user.ToPlainObj);
   }
 
-  public SetPermittedEmailSignedUp(emailAddress: string) {
+  private SetPermittedEmailSignedUp(emailAddress: string) {
 
     const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, emailAddress);
 
