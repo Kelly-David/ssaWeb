@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection, QueryFn } from '@angular/fire/compat/firestore';
-import { Observable, of } from 'rxjs';
+import { Observable, of, firstValueFrom } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as firebase from 'firebase/firestore';
-import { Base } from '../shared/models/base';
-import { User } from '../shared/models/user';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 type CollectionPredicate<T> = string | AngularFirestoreCollection<T>;
 type DocPredicate<T> = string | AngularFirestoreDocument<T>;
@@ -17,24 +14,18 @@ export class FirestoreService {
 
   constructor(
     private firestore: AngularFirestore,
-    private fireAuth: AngularFireAuth
   ) { }
 
 
-  public GetAuthState(): Observable<User> | Observable<any> {
-
-    return this.fireAuth.authState.pipe(switchMap(user => {
-      if (user) {
-        return this.firestore.doc<User>(`Users/${user.uid}`).valueChanges();
-      } else {
-        return of(null) as Observable<any>;
-      }
-    }));
+  public FetchDocSnapShot<T>(ref: DocPredicate<T>) {
+    return this.doc(ref).snapshotChanges();
   }
 
+  public FetchColSnapShot<T>(ref: CollectionPredicate<T>, queryFn?: QueryFn) {    
+    return this.col(ref, queryFn).snapshotChanges();
+  }
 
-
-
+ 
 
 
 
@@ -50,7 +41,7 @@ export class FirestoreService {
     return typeof ref === 'string' ? this.firestore.doc<T>(ref) : ref;
   }
 
-  col$<T>(ref: CollectionPredicate<T> | string, queryFn? : QueryFn): Observable<T[]> {
+  col$<T>(ref: CollectionPredicate<T> | string, queryFn?: QueryFn): Observable<T[]> {
     return this.col(ref, queryFn).valueChanges();
   }
 
@@ -71,9 +62,9 @@ export class FirestoreService {
    * @description Return server timestamp
    */
   get timeStamp() {
-    return firebase.serverTimestamp();        
+    return firebase.serverTimestamp();
   }
-   
+
   /**
  * @description Updates a firestore doc ref
  */
@@ -109,15 +100,15 @@ export class FirestoreService {
   }
 
   async reset<T>(ref: CollectionPredicate<T>, data: any) {
-    
+
     const documents = (await this.firestore.firestore.collection(ref as string).get()).docs;
 
     documents.forEach(doc => {
-        doc.ref.delete();
+      doc.ref.delete();
     })
 
     data.forEach((item: T | any) => {
-        this.col(ref).doc(item.id).set(item);
+      this.col(ref).doc(item.id).set(item);
     });
   }
 

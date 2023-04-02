@@ -1,0 +1,29 @@
+<ng-container *ngIf="user != undefined">
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt>
+        <dd class="col-sm-9">{{user.Id | uppercase}}</dd>
+
+        <dt class="col-sm-3">First Name</dt>
+        <dd class="col-sm-9">{{user.FirstName}}</dd>
+
+        <dt class="col-sm-3">Last Name</dt>
+        <dd class="col-sm-9">{{user.LastName}}</dd>
+
+        <dt class="col-sm-3">Email Address</dt>
+        <dd class="col-sm-9">{{user.Email}}</dd>
+        
+        <dt class="col-sm-3">Role</dt>
+        <dd class="col-sm-9">{{user.Role}} ({{user.GetHighestPermissions}})</dd>
+
+        <dt class="col-sm-3">Created DateTime</dt>
+        <dd class="col-sm-9">{{user.GetCreatedDateString}}</dd>
+
+        <dt class="col-sm-3">Updated DateTime</dt>
+        <dd class="col-sm-9">{{user.GetUpdatedDateString}}</dd>
+
+        <dt class="col-sm-3">Last LoggedIn</dt>
+        <dd class="col-sm-9">{{user.GetLastLoggedInDateString}}</dd>
+
+      </dl>
+</ng-container>
+

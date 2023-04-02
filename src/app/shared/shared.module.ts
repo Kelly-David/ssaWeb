@@ -6,17 +6,19 @@ import { AlertDangerComponent } from './components/alert-danger/alert-danger.com
 import { AlertWarningComponent } from './components/alert-warning/alert-warning.component';
 import { AlertInfoComponent } from './components/alert-info/alert-info.component';
 import { AlertSuccessComponent } from './components/alert-success/alert-success.component';
-
-
+import { FormsModule } from '@angular/forms';
+import { CollectionFilterPipe } from './pipes/collection-filter.pipe';
 
 @NgModule({
   declarations: [
     AlertDangerComponent,
     AlertWarningComponent,
     AlertInfoComponent,
-    AlertSuccessComponent
+    AlertSuccessComponent,
+    CollectionFilterPipe
   ],
   imports: [
+    FormsModule,
     CommonModule,
     AppRoutingModule,
     ReactiveFormsModule
@@ -27,7 +29,9 @@ import { AlertSuccessComponent } from './components/alert-success/alert-success.
     AlertDangerComponent,
     AlertWarningComponent,
     AlertInfoComponent,
-    AlertSuccessComponent
+    AlertSuccessComponent,
+    FormsModule,
+    CollectionFilterPipe
   ]
 })
 export class SharedModule { }

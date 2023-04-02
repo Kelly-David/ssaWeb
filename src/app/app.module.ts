@@ -7,10 +7,11 @@ import { CoreModule } from './core/core.module';
 import { NavigationModule } from './navigation/navigation.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { UsersModule } from './users/users.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -19,9 +20,10 @@ import { DashboardModule } from './dashboard/dashboard.module';
     BrowserAnimationsModule, 
     AuthModule,
     NavigationModule,
-    DashboardModule
+    DashboardModule,
+    UsersModule
   ],
-  providers: [],
+  providers: [ ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

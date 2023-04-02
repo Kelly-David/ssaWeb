@@ -5,13 +5,23 @@ import { AuthGuard } from './guards/auth.guard';
 import { SignInComponent } from './auth/sign-in/sign-in.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { ResetComponent } from './auth/reset/reset.component';
+import { DailyFormComponent } from './daily-form/daily-form/daily-form.component';
+import { UsersComponent } from './users/users/users.component';
+import { UserBaseComponent } from './users/user-base/user-base.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'auth' },
   { path: 'sign-in', component: SignInComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'reset', component: ResetComponent },
-  { path: 'auth', component: DashboardComponent, canActivate: [AuthGuard] }
+  {
+    path: 'auth', canActivate: [AuthGuard],
+    children: [
+      { path: '', component: DashboardComponent },
+      { path: 'daily-form', component: DailyFormComponent },
+      { path: 'staff', component: UserBaseComponent }
+    ]
+  }
 ];
 
 @NgModule({
@@ -19,4 +29,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
- 

@@ -1,7 +1,7 @@
 <nav class="navbar fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Shining Stars Academy</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"  *ngIf="user$ | async as user"
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"  *ngIf="user | async as user"
             aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -13,13 +13,13 @@
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <li class="nav-item">
-                        <a class="nav-link" [routerLink]="['/auth']">Dashboard</a>
+                        <a class="nav-link" data-bs-dismiss="offcanvas" [routerLink]="['/auth']">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" [routerLink]="['/auth/daily-form']">Daily Form</a>
+                        <a class="nav-link" data-bs-dismiss="offcanvas" [routerLink]="['/auth/daily-form']">Daily Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" [routerLink]="['/auth/alerts']">Alerts</a>
+                        <a class="nav-link" data-bs-dismiss="offcanvas" [routerLink]="['/auth/alerts']">Alerts</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -27,10 +27,11 @@
                             Groups
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" [routerLink]="['/auth/children']">Children</a></li>
-                            <li><a class="dropdown-item" [routerLink]="['/auth/rooms']">Rooms</a></li>
-                            <li><a class="dropdown-item" [routerLink]="['/auth/parents']">Parents</a></li>
-                            <li><a class="dropdown-item" [routerLink]="['/auth/staff']">Staff</a></li>
+                            <li><a class="dropdown-item" data-bs-dismiss="offcanvas" [routerLink]="['/auth/children']">Children</a></li>
+                            <li><a class="dropdown-item" data-bs-dismiss="offcanvas" [routerLink]="['/auth/rooms']">Rooms</a></li>
+                            <li><a class="dropdown-item" data-bs-dismiss="offcanvas" [routerLink]="['/auth/parents']">Parents</a></li>
+                            <hr class="dropdown-divider">                            
+                            <li><a class="dropdown-item" data-bs-dismiss="offcanvas" [routerLink]="['/auth/staff']">Staff</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -39,11 +40,11 @@
                             Settings
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">My Profile</a></li>
+                            <li><a class="dropdown-item" data-bs-dismiss="offcanvas">My Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" (click)="Logout()">Logout</a></li>
+                            <li><a class="dropdown-item" data-bs-dismiss="offcanvas" (click)="Logout()">Logout</a></li>
                         </ul>
                     </li>
                 </ul>

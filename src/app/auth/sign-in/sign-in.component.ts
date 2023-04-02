@@ -1,9 +1,9 @@
 import { Credentials } from './../../shared/models/credentials';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { take } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -15,7 +15,7 @@ export class SignInComponent implements OnInit {
   public form: FormGroup;
 
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     private formBuilder: FormBuilder
   ) { 
@@ -31,7 +31,7 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.authService.user.pipe(take(1)).subscribe(user => {
+    this.userService.LoggedInUser.pipe(take(1)).subscribe(user => {
       if (user) {
         console.log(user);
         this.router.navigate(['/auth/']);
@@ -47,7 +47,7 @@ export class SignInComponent implements OnInit {
     } as Credentials;
 
     try {
-      await this.authService.SignInWithEmailAndPassword(credentials).then(
+      await this.userService.SignInWithEmailAndPassword(credentials).then(
         _ => this.router.navigate(['/auth/'])
       );
     }

@@ -1,16 +1,14 @@
-<ng-container *ngIf="user$ | async as user">
+<ng-container *ngIf="user | async as user">
 
-    <div class="container">
-        <h4>Welcome {{user.FirstName}}</h4>
-        <div class="line-nospacing"></div>
-    
-        <div class="row d-flex justify-content-center">
-            <div class="col-8">
-                
-            
-            </div>
+    <h4>Welcome {{user.FirstName}}</h4>
+    <div class="line-nospacing"></div>
+
+    <div class="row d-flex justify-content-center">
+        <div class="col">
+
+            <p>{{user.GetHighestPermissions}}</p>
+
         </div>
     </div>
 
 </ng-container>
-

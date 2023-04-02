@@ -1,25 +1,111 @@
 import { Strings } from '../shared/strings';
 import { Injectable } from '@angular/core';
-import { FirestoreService } from './firstore.service';
 import { PermittedEmail } from '../shared/models/permittedEmail';
-import { firstValueFrom } from 'rxjs';
-import { User } from '../shared/models/user';
-
+import { Observable, of } from 'rxjs';
+import { User, UserPermissions, UserRole } from '../shared/models/user';
+import { map, switchMap } from 'rxjs/operators';
+import { Credentials } from '../shared/models/credentials';
+import { DocumentChangeAction } from '@angular/fire/compat/firestore';
+import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit } from '@angular/fire/firestore';
+import { Auth, user, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, UserCredential, fetchSignInMethodsForEmail } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+  public LoggedInUser: Observable<User | null>;
+
   constructor(
-    private firestoreService: FirestoreService
-  ) { }
+    private firestore: Firestore,
+    private auth: Auth
+  ) {
+    this.LoggedInUser = this.GetLoggedInUser();
+  }
+
+  private GetLoggedInUser() {
+
+    const authUser = user(this.auth);
+
+    return authUser.pipe(switchMap(user => {
+       
+      if (user) {
+
+        const userDocument = doc(this.firestore, Strings.UsersCollection, user.uid);
+
+        const docSnap = getDoc(userDocument);
+
+        return docSnap.then((value: DocumentSnapshot) => {
+          if (value.exists()) {
+
+            let userDoc = value.data() as User;
+
+            return new User(userDoc);
+          }
+          else {
+            return null;
+          }
+        })        
+      }
+      return of(null) as Observable<null>;
+    }))
+  }
+
+  public GetUsersAsync(role: string, startIndex: number = 0, lim: number = 20 ) : Observable<User[]> {
+
+    const usersCollection = collection(this.firestore, Strings.UsersCollection);
+    const userQuery = query(usersCollection, where("Role", "==", role), orderBy("FirstName"), startAt(startIndex), limit(lim));
+
+    return collectionData(userQuery).pipe(map(documents => {
+      let users = documents;
+
+      return users.map(document => {
+        return new User(document as User);
+      })
+    }));
+  }
+
+  public GetStaffUsersAsync() {
+
+    const collectionRef = collection(this.firestore, Strings.UsersCollection);
+
+    const q = query(collectionRef, where("Role", "==", "Staff"));
+
+    return collectionData(collectionRef).pipe(map(docs => {
+
+        let users = docs;
+
+        return users.map(doc => {
+
+          let user = doc as User;
+
+          return new User(user);
+        })
+      }))
+  }
+
+  public GetPermittedEmailsAsync() {
+
+    const collectionRef = collection(this.firestore, Strings.PermittedEmailsCollection);
+
+    return collectionData(collectionRef).pipe(map(docs => {
+      
+      let users = docs as DocumentChangeAction<PermittedEmail>[];
+
+      return users.map(doc => {
+
+        let user = doc.payload.doc.data() as PermittedEmail;
+
+        return user as PermittedEmail;
+      })
+    }))
+  }
 
   public async IsUserEmailPermitted(email: string): Promise<boolean> {
-    
-    const query = this.firestoreService.doc$<PermittedEmail>(`${Strings.PermittedEmailsCollection}/${email}`);
 
-    const emailAddress = await firstValueFrom(query);
+    const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, email);
+    const docSnap = await getDoc(docRef);
+    const emailAddress = docSnap.data();
 
     if (emailAddress != null && !emailAddress.SignedUp) return true;
 
@@ -27,27 +113,159 @@ export class UserService {
   }
 
   public async GetPermittedEmailData(email: string): Promise<PermittedEmail | null> {
-    
-    const query = this.firestoreService.doc$<PermittedEmail>(`${Strings.PermittedEmailsCollection}/${email}`);
 
-    const emailAddress = await firstValueFrom(query);
+    const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, email);
+    const docSnap = await getDoc(docRef);
 
-    if (emailAddress != null) return emailAddress;
-
+    if (docSnap.exists()) {
+      
+      return docSnap.data() as PermittedEmail;
+    }
     return null;
+  }
+
+  public async SignUpWithEmailAndPassword(credentials: Credentials, firstName: string, lastName: string): Promise<boolean> {
+
+    if (this.ValidateCredentials(credentials)) {
+
+      if (await this.IsUserEmailPermitted(credentials.Email)) {
+
+        try {
+
+          let result!: UserCredential | undefined;
+
+          result = await createUserWithEmailAndPassword(this.auth, credentials.Email, credentials.Password);
+
+          if (result?.user) {
+
+            let authUser = result?.user;
+
+            let emailData = await this.GetPermittedEmailData(authUser.email!);
+
+            let role = emailData != null && emailData.Role != undefined ? emailData.Role : UserRole.Staff;
+
+            let permissions = emailData != null && emailData.Permissions != undefined ? emailData.Permissions : { Reader: true, Editor: true, Admin: false };
+
+            let model = {
+              Id: authUser.uid,
+              FirstName: firstName,
+              LastName: lastName,
+              Email: authUser.email,
+              Permissions: permissions,
+              Role: role,
+              CreatedDateTime: new Date()
+            } as User;
+
+            const user = new User(model);
+
+            this.SetupNewUser(user);
+
+            this.SetPermittedEmailSignedUp(credentials.Email);
+
+            return true;
+          }
+
+        } catch (error) {
+
+          console.log((error as Error).message)
+
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
+  public async SignInWithEmailAndPassword(credentials: Credentials): Promise<boolean> {
+
+    if (this.ValidateCredentials(credentials)) {
+
+      const result = await signInWithEmailAndPassword(this.auth, credentials.Email, credentials.Password);
+
+      if (result?.user != null) {
+
+        let user = result.user;
+
+        await this.UpdateUser(user.uid, { LastLoggedIn: new Date() })
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public async ResetPassword(email: string): Promise<string> {
+
+    return await sendPasswordResetEmail(this.auth, email)
+      .catch(error => {
+        return error
+      });
+  }
+
+  public SignOut(): Promise<void> {
+    return signOut(this.auth);
+  }
+
+  private CheckUserAuthorization(user: User, allowedPermissions: string[]): boolean {
+    if (!user) {
+      return false;
+    }
+
+    for (const role of allowedPermissions) {
+
+      if (user.Permissions[role as keyof UserPermissions]) {
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public CanRead(user: User): boolean {
+    const allowed = ['Reader'];
+    return this.CheckUserAuthorization(user, allowed);
+  }
+
+  public CanEdit(user: User): boolean {
+    const allowed = ['Admin', 'Editor'];
+    return this.CheckUserAuthorization(user, allowed);
+  }
+
+  public CanDelete(user: User): boolean {
+    const allowed = ['Admin'];
+    return this.CheckUserAuthorization(user, allowed);
+  }
+
+  private ValidateCredentials(credentials: Credentials): boolean {
+
+    if (!Boolean(credentials.Email) || !Boolean(credentials.Password)) {
+      return false;
+    }
+
+    return true;
   }
 
   public SetupNewUser(user: User) {
 
-    return this.firestoreService.insertOne<User>(`${Strings.UsersCollection}`, user);
+    const docRef = doc(this.firestore, Strings.UsersCollection, user.Id);
+
+    setDoc(docRef, <User> user.ToPlainObj);
   }
 
   public SetPermittedEmailSignedUp(emailAddress: string) {
 
-    let email: PermittedEmail = { Id: emailAddress, Email: emailAddress, SignedUp: true };
+    const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, emailAddress);
 
-    return this.firestoreService.updateOne<PermittedEmail>(`${Strings.PermittedEmailsCollection}`, email);
+    updateDoc(docRef, { Id: emailAddress, Email: emailAddress, SignedUp: true });
   }
 
+  private async UpdateUser(userId: string, data: {}) {
+
+    const docRef = doc(this.firestore, Strings.UsersCollection, userId);
+
+    await updateDoc(docRef, data);
+  }
 
 }
+

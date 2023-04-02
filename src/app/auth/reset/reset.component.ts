@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-reset',
@@ -17,7 +17,7 @@ export class ResetComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private userService: UserService
   ) { 
 
     this.resetSent = false;
@@ -34,7 +34,7 @@ export class ResetComponent implements OnInit {
   }
 
   public async Submit() {
-    let result = await this.authService.ResetPassword(this.FormEmail);
+    let result = await this.userService.ResetPassword(this.FormEmail);
 
     if (result) {
       this.errorMessage = result;
