@@ -12,7 +12,7 @@ export interface User extends Base {
 }
 
 export class User implements User{
-    
+
     public Id: string;
 
     public FirstName: string;
@@ -33,17 +33,23 @@ export class User implements User{
 
     public Role: UserRole;
 
+    public LockedOut: boolean = false;
+
+    public Offices: [];
+
     constructor(user: User) {
         this.Id = user.Id ?? null;
         this.FirstName = user.FirstName ?? null;
         this.LastName = user.LastName ?? null;
         this.Email = user.Email ?? null;
         this.CreatedDateTime = user.CreatedDateTime ?? null;
-        this.IsArchived = false;
+        this.IsArchived = user.IsArchived ?? false;
         this.Permissions = user.Permissions ?? null ;
         this.Role = user.Role ?? null;
         this.UpdatedDateTime = user.UpdatedDateTime ?? null;
         this.LastLoggedIn = user.LastLoggedIn ?? null;
+        this.LockedOut = user.LockedOut ?? false;
+        this.Offices = user.Offices?? [];
     }
 
     get GetHighestPermissions(): string {
@@ -63,12 +69,12 @@ export class User implements User{
     }
 
     get GetUpdatedDateString() : string {
-        
+
         return this.UpdatedDateTime != undefined ? (this.UpdatedDateTime.toDate() as Date).toUTCString() : this.GetCreatedDateString;
     }
 
     get GetLastLoggedInDateString() : string {
-        
+
         return this.LastLoggedIn != undefined ? (this.LastLoggedIn.toDate() as Date).toUTCString() : "";
     }
 

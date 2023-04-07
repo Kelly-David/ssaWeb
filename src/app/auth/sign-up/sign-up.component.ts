@@ -68,7 +68,7 @@ export class SignUpComponent implements OnInit {
     let lName = this.FormLastName;
 
     if (await this.userService.SignUpWithEmailAndPassword(credentials, fName, lName)) {
-      //this.router.navigate(['/auth/']);
+      this.router.navigate(['/auth/']);
     }
     else {
       this.errorMessage = "Your registration could not be completed at this time. Please contact your system administrator."

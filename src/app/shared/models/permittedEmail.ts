@@ -5,7 +5,8 @@ export class PermittedEmail {
     public Email: string;
     public SignedUp: boolean;
     public Role?: UserRole;
-    public Permissions?: UserPermissions
+    public Permissions?: UserPermissions;
+    public Offices: []
 
     constructor(user: any) {
         this.Id = user.Id ?? null;
@@ -13,5 +14,10 @@ export class PermittedEmail {
         this.SignedUp = user.SignedUp ?? null;
         this.Role = user.Role ?? null;
         this.Permissions = user.Permissions ?? null;
+        this.Offices = user.Offices?? [];
     }
+
+    get ToPlainObj() : object {
+      return Object.assign({}, this);
+  }
 }

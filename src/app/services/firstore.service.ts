@@ -1,157 +1,30 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection, QueryFn } from '@angular/fire/compat/firestore';
-import { Observable, of, firstValueFrom } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import * as firebase from 'firebase/firestore';
-
-type CollectionPredicate<T> = string | AngularFirestoreCollection<T>;
-type DocPredicate<T> = string | AngularFirestoreDocument<T>;
+import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit } from '@angular/fire/firestore';
+import { Auth, user, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, UserCredential, fetchSignInMethodsForEmail } from '@angular/fire/auth';
+import { PermittedEmail } from '../shared/models/permittedEmail';
+import { Strings } from '../shared/strings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirestoreService {
 
-  constructor(
-    private firestore: AngularFirestore,
-  ) { }
+  constructor(private firestore: Firestore, private auth: Auth) { }
 
+  public InsertPermittedEmailDocuments() {
 
-  public FetchDocSnapShot<T>(ref: DocPredicate<T>) {
-    return this.doc(ref).snapshotChanges();
-  }
+    for (let i = 0; i < 20; i++) {
 
-  public FetchColSnapShot<T>(ref: CollectionPredicate<T>, queryFn?: QueryFn) {    
-    return this.col(ref, queryFn).snapshotChanges();
-  }
+      let document = {
+        Email: `webtest${i}@test.com`,
+        Id: `webtest${i}@test.com`,
+        SignedUp: false,
+        Role: 'Staff',
+        Offices: ["coneyboro"]
+      };
 
- 
-
-
-
-
-
-  //////////////////////////////////////
-
-  col<T>(ref: CollectionPredicate<T>, queryFn?: QueryFn): AngularFirestoreCollection<T> {
-    return typeof ref === 'string' ? this.firestore.collection<T>(ref, queryFn) : ref;
-  }
-
-  doc<T>(ref: DocPredicate<T>): AngularFirestoreDocument<T> {
-    return typeof ref === 'string' ? this.firestore.doc<T>(ref) : ref;
-  }
-
-  col$<T>(ref: CollectionPredicate<T> | string, queryFn?: QueryFn): Observable<T[]> {
-    return this.col(ref, queryFn).valueChanges();
-  }
-
-  /**
-   * @description Firestore Document snapshot
-   */
-  doc$<T>(ref: DocPredicate<T>): Observable<T> {
-    return this.doc(ref).snapshotChanges().pipe(map(doc => {
-      return doc.payload.data() as T;
-    }));
-  }
-
-  /**********
-   * WRITE DATA
-   *********/
-
-  /**
-   * @description Return server timestamp
-   */
-  get timeStamp() {
-    return firebase.serverTimestamp();
-  }
-
-  /**
- * @description Updates a firestore doc ref
- */
-  update<T>(ref: DocPredicate<T>, key: string, data: any) {
-    return this.doc(ref + `/${key}`).update({
-      ...data,
-      updatedAt: this.timeStamp
-    });
-  }
-
-  /**
-    * @description Custom set method - add a single doc to a specified collection
-    */
-  set<T>(ref: DocPredicate<T>, data: any, id?: string) {
-    const timeStamp = this.timeStamp;
-    // If we pass an id, don't create one
-    const uniqueRef = data.id ? data.id : this.firestore.createId();
-    return this.doc(ref + `/${uniqueRef}`).set({
-      ...data,
-      id: uniqueRef,
-      updatedAt: timeStamp,
-      createdAt: timeStamp,
-      deleted: false
-    });
-  }
-
-  insertOne<T>(ref: DocPredicate<T>, object: any) {
-    return this.doc(ref + `/${object.Id}`).set(Object.assign({}, object));
-  }
-
-  updateOne<T>(ref: DocPredicate<T>, object: any) {
-    return this.doc(ref + `/${object.Id}`).update(Object.assign({}, object));
-  }
-
-  async reset<T>(ref: CollectionPredicate<T>, data: any) {
-
-    const documents = (await this.firestore.firestore.collection(ref as string).get()).docs;
-
-    documents.forEach(doc => {
-      doc.ref.delete();
-    })
-
-    data.forEach((item: T | any) => {
-      this.col(ref).doc(item.id).set(item);
-    });
-  }
-
-  mergeSet<T>(ref: DocPredicate<T>, id: string, data: any) {
-    const timeStamp = this.timeStamp;
-    return this.doc(ref + `/${id}`).set({
-      ...data,
-      id: id,
-      updatedAt: timeStamp,
-      createdAt: timeStamp,
-      deleted: false
-    }, { merge: true });
-  }
-
-  async updateIfExists(collection: string, id: string, data: any) {
-    const timeStamp = this.timeStamp;
-
-    const document = await this.firestore.firestore.collection(collection).doc(id).get();
-
-    if (document && document.exists) {
-      await document.ref.update({
-        ...data,
-        visits: firebase.increment(1),
-        updatedAt: timeStamp
-      });
-    } else {
-      await document.ref.set({
-        ...data,
-        id: id,
-        visits: 1,
-        acceptedCookies: false,
-        updatedAt: timeStamp,
-        createdAt: timeStamp,
-        deleted: false
-      }, { merge: true });
+      setDoc(doc(this.firestore, Strings.PermittedEmailsCollection, document.Id), document);
     }
-  }
-
-  /**
-    * @description Delete method
-    */
-  delete<T>(ref: DocPredicate<T>, id: string) {
-    return this.doc(ref + `/${id}`).delete();
   }
 
 }

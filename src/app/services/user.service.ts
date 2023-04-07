@@ -1,7 +1,7 @@
 import { Strings } from '../shared/strings';
 import { Injectable } from '@angular/core';
 import { PermittedEmail } from '../shared/models/permittedEmail';
-import { Observable, of } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { User, UserPermissions, UserRole } from '../shared/models/user';
 import { map, switchMap } from 'rxjs/operators';
 import { Credentials } from '../shared/models/credentials';
@@ -46,10 +46,15 @@ export class UserService {
   }
 
   /// Query the Users collection
-  public GetUsersAsync(role: string, startIndex: number = 0, lim: number = 20): Observable<User[]> {
+  public GetUsersAsync(role: string, startIndex: number = 0, lim: number = 20, isArchived: boolean = false): Observable<User[]> {
 
     const usersCollection = collection(this.firestore, Strings.UsersCollection);
-    const userQuery = query(usersCollection, where("Role", "==", role), orderBy("FirstName"), startAt(startIndex), limit(lim));
+    const userQuery = query(usersCollection,
+      where("Role", "==", role),
+      where("IsArchived", "==", isArchived),
+      orderBy("FirstName"),
+      startAt(startIndex),
+      limit(lim));
 
     return collectionData(userQuery).pipe(map(documents => {
       let users = documents;
@@ -113,6 +118,7 @@ export class UserService {
           if (result?.user) {
             let authUser = result?.user;
             let emailData = await this.GetPermittedEmailData(authUser.email!);
+
             let role = emailData != null && emailData.Role != undefined ? emailData.Role : UserRole.Staff;
             let permissions = emailData != null && emailData.Permissions != undefined ? emailData.Permissions : { Reader: true, Editor: true, Admin: false };
 
@@ -123,7 +129,8 @@ export class UserService {
               Email: authUser.email,
               Permissions: permissions,
               Role: role,
-              CreatedDateTime: new Date()
+              CreatedDateTime: new Date(),
+              Offices: emailData?.Offices
             } as User;
 
             const user = new User(model);

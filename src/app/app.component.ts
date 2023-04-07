@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { UserService } from './services/user.service';
+import { ConfigService } from './services/config.service';
+import { GlobalConfiguration } from './shared/models/GlobalConfiguration';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -7,12 +9,16 @@ import { UserService } from './services/user.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
   title = 'ssaWeb';
 
-  constructor(
-  ) {}
+  public globalConfig!: Observable<GlobalConfiguration | null>;
+
+  constructor(private configService: ConfigService) {}
 
   ngOnInit(): void {
-    
+
+    this.globalConfig = this.configService.GlobalConfig;
+
   }
 }
