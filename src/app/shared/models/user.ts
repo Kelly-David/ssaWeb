@@ -63,6 +63,10 @@ export class User implements User{
         return permission.toString();
     }
 
+    get IsAdmin(): boolean {
+      return this.Permissions.Admin;
+    }
+
     get GetCreatedDateString() : string {
 
         return (this.CreatedDateTime.toDate() as Date).toUTCString();

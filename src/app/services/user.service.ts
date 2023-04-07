@@ -6,7 +6,7 @@ import { User, UserPermissions, UserRole } from '../shared/models/user';
 import { map, switchMap } from 'rxjs/operators';
 import { Credentials } from '../shared/models/credentials';
 import { DocumentChangeAction } from '@angular/fire/compat/firestore';
-import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit } from '@angular/fire/firestore';
+import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit, QueryConstraint } from '@angular/fire/firestore';
 import { Auth, user, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, UserCredential, fetchSignInMethodsForEmail } from '@angular/fire/auth';
 
 @Injectable({
@@ -46,15 +46,28 @@ export class UserService {
   }
 
   /// Query the Users collection
-  public GetUsersAsync(role: string, startIndex: number = 0, lim: number = 20, isArchived: boolean = false): Observable<User[]> {
+  public GetUsersAsync(role: string, startIndex: number = 0, lim: number = 20, isArchived: boolean = false,
+    offices: string[] = [], includeAdmin: boolean = false): Observable<User[]> {
 
     const usersCollection = collection(this.firestore, Strings.UsersCollection);
-    const userQuery = query(usersCollection,
-      where("Role", "==", role),
-      where("IsArchived", "==", isArchived),
-      orderBy("FirstName"),
-      startAt(startIndex),
-      limit(lim));
+
+    var constraints: QueryConstraint[] = []
+
+    constraints.push(where("IsArchived", "==", isArchived));
+    constraints.push(where("Role", "==", role));
+
+    if (includeAdmin)
+      constraints.push(where("Permissions.Admin", "==", includeAdmin));
+
+    constraints.push(where("Permissions.Editor", "==", true));
+
+    constraints.push(where("Offices", "array-contains-any", offices));
+
+    constraints.push(orderBy("FirstName"));
+    constraints.push(startAt(startIndex));
+    constraints.push(limit(lim));
+
+    const userQuery = query(usersCollection, ...constraints);
 
     return collectionData(userQuery).pipe(map(documents => {
       let users = documents;
