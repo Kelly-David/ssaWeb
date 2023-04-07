@@ -15,10 +15,24 @@
     <button class="btn mb-3" data-bs-toggle="collapse" data-bs-target="#collapseFilter">
       <i class="fas fa-filter"></i>
     </button>
-    <button class="btn mb-3" [disabled]="!user.IsAdmin">
+    <button class="btn mb-3" [disabled]="!user.IsAdmin" data-bs-toggle="collapse" data-bs-target="#collapseAddUser">
       <i class="fas fa-user-plus"></i>
     </button>
   </div>
+
+  <ng-container *ngIf="user.IsAdmin">
+    <div class="row collapse mb-3" id="collapseAddUser">
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+
+           <app-add-user [authUser]="user"></app-add-user>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 
   <div class="row collapse mb-3" id="collapseFilter">
     <div class="col">

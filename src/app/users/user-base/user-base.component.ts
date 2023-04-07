@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, pipe } from 'rxjs';
 import { User } from 'src/app/shared/models/user';
 import { UserService } from '../../services/user.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { OfficService } from 'src/app/services/offic.service';
-import { Office } from 'src/app/shared/models/GlobalConfiguration';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -17,14 +15,13 @@ export class UserBaseComponent implements OnInit {
 
   public authUser$: Observable<any>;
   public users!: Observable<User[] | null>;
-  public offices!: Office[];
   public searchTerm!: string;
   public form: FormGroup;
   public filterError: string = '';
 
   private userFilter: UserFilter;
 
-  constructor(private userService: UserService, private officeService: OfficService, private formBuilder: FormBuilder) {
+  constructor(private userService: UserService, private formBuilder: FormBuilder) {
 
     this.authUser$ = this.userService.LoggedInUser;
 
@@ -50,8 +47,6 @@ export class UserBaseComponent implements OnInit {
   get FormCheckbox_archived(): boolean | undefined { return this.form.get('FormCheckbox_archived')?.value }
 
   ngOnInit(): void {
-
-    this.userService.LoggedInUser
 
     this.userService.LoggedInUser.pipe(take(1)).subscribe(user => {
       if (user) {

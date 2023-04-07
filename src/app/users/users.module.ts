@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { UserListItemComponent } from './user-list-item/user-list-item.component';
 import { UserItemComponent } from './user-item/user-item.component';
 import { UserBaseComponent } from './user-base/user-base.component';
+import { AddUserComponent } from './add-user/add-user.component';
 
 
 
@@ -13,7 +14,8 @@ import { UserBaseComponent } from './user-base/user-base.component';
     UsersComponent,
     UserListItemComponent,
     UserItemComponent,
-    UserBaseComponent
+    UserBaseComponent,
+    AddUserComponent
   ],
   imports: [
     CommonModule,

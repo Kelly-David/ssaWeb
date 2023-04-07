@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Office } from '../shared/models/GlobalConfiguration';
 import { Firestore, collection, collectionData, query } from '@angular/fire/firestore';
+import { Office } from '../shared/models/GlobalConfiguration';
 
 @Injectable({
   providedIn: 'root'
