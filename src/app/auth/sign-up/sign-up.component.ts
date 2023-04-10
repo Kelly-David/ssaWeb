@@ -44,7 +44,7 @@ export class SignUpComponent implements OnInit {
 
   public async IsEmailAllowed() {
 
-    let email = this.FormEmail;
+    let email = this.FormEmail.toLowerCase();
 
     if (await this.userService.IsUserEmailPermitted(email)) {
 
@@ -60,7 +60,7 @@ export class SignUpComponent implements OnInit {
   public async SignUp() {
 
     let credentials = {
-      Email: this.FormUsername,
+      Email: this.FormUsername.toLowerCase(),
       Password: this.FormPassword
     } as Credentials;
 

@@ -18,7 +18,7 @@ export class SignInComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private formBuilder: FormBuilder
-  ) { 
+  ) {
 
     this.form = this.formBuilder.group({
       'FormUsername' : [{ value: '', disabled: false }, [Validators.required]],
@@ -42,7 +42,7 @@ export class SignInComponent implements OnInit {
   public async Submit() {
 
     let credentials = {
-      Email: this.FormUsername,
+      Email: this.FormUsername.toLowerCase(),
       Password: this.FormPassword
     } as Credentials;
 

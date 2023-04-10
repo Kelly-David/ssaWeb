@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { PermittedEmail } from '../shared/models/permittedEmail';
 import { Observable, from, of } from 'rxjs';
 import { User, UserPermissions, UserRole } from '../shared/models/user';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { Credentials } from '../shared/models/credentials';
 import { DocumentChangeAction } from '@angular/fire/compat/firestore';
-import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit, QueryConstraint } from '@angular/fire/firestore';
+import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit, QueryConstraint, getDocs } from '@angular/fire/firestore';
 import { Auth, user, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, UserCredential, fetchSignInMethodsForEmail } from '@angular/fire/auth';
 
 @Injectable({
@@ -99,6 +99,26 @@ export class UserService {
     const emailAddress = docSnap.data();
 
     if (emailAddress != null && !emailAddress.SignedUp) return true;
+
+    return false;
+  }
+
+  public async UserEmailExists(email: string): Promise<boolean> {
+
+    const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, email);
+    const docSnap = await getDoc(docRef);
+    const emailAddress = docSnap.data();
+
+    if (emailAddress != null) return true;
+
+    const collectionRef = collection(this.firestore, Strings.UsersCollection);
+    const userQuery = query(collectionRef, where("Email", "==", email));
+
+    const usersData = await getDocs(userQuery);
+
+    let users = usersData.docs;
+
+    if (users.length > 0) return true;
 
     return false;
   }
@@ -211,6 +231,19 @@ export class UserService {
   public CanDelete(user: User): boolean {
     const allowed = ['Admin'];
     return this.CheckUserAuthorization(user, allowed);
+  }
+
+  public async InsertPermittedEmail(user: PermittedEmail): Promise<boolean> {
+
+    const docRef = doc(this.firestore, Strings.PermittedEmailsCollection, user.Id!);
+
+    try {
+      await setDoc(docRef, <PermittedEmail>user.ToPlainObj);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
   // region Private Methods -----------------------------------------------------------------------------------------------
