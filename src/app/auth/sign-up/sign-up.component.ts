@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { Credentials } from '../../shared/models/credentials';
 import { take } from 'rxjs/operators';
@@ -28,6 +28,7 @@ export class SignUpComponent implements OnInit {
   get FormEmail() { return this.emailForm.get('FormEmail')?.value }
   get FormUsername() { return this.form.get('FormUsername')?.value }
   get FormPassword() { return this.form.get('FormPassword')?.value }
+  get FormPasswordConfirm() { return this.form.get('FormPasswordConfirm')?.value }
   get FormFirstName() { return this.form.get('FormFirstName')?.value }
   get FormLastName() { return this.form.get('FormLastName')?.value }
 
@@ -39,7 +40,6 @@ export class SignUpComponent implements OnInit {
         this.router.navigate(['/auth/']);
       }
     });
-
   }
 
   public async IsEmailAllowed() {
@@ -47,10 +47,8 @@ export class SignUpComponent implements OnInit {
     let email = this.FormEmail.toLowerCase();
 
     if (await this.userService.IsUserEmailPermitted(email)) {
-
       this.emailAllowed = true;
       this.PatchForm();
-
     }
     else {
       this.errorMessage = "You are not permitted to sign up. Try again or contact your system administrator."
@@ -81,20 +79,33 @@ export class SignUpComponent implements OnInit {
   }
 
   private Initialize() {
+
     this.emailAllowed = false;
 
     this.emailForm = this.formBuilder.group({ 'FormEmail': [{ value: '', disabled: false }, [Validators.required]] });
 
-    this.form = this.formBuilder.group({
-      'FormUsername': [{ value: '', disabled: true }, [Validators.required]],
-      'FormPassword': [{ value: '', disabled: false }, [Validators.required]],
-      'FormFirstName': [{ value: '', disabled: false }, [Validators.required]],
-      'FormLastName': [{ value: '', disabled: false }, [Validators.required]]
-    });
+    this.form = this.formBuilder.group(
+      {
+        'FormUsername': [{ value: '', disabled: true }, [Validators.required]],
+        'FormPassword': [{ value: '', disabled: false }, [Validators.required, Validators.minLength(8)]],
+        'FormPasswordConfirm': [{ value: '', disabled: false }, [Validators.required, Validators.minLength(8)]],
+        'FormFirstName': [{ value: '', disabled: false }, [Validators.required]],
+        'FormLastName': [{ value: '', disabled: false }, [Validators.required]]
+      },
+      {
+        validators: this.PasswordValidator.bind(this),
+        updateOn: 'change'
+      });
   }
 
   private PatchForm() {
     this.form.patchValue({ FormUsername: this.FormEmail });
+  }
+
+  private PasswordValidator(formGroup: AbstractControl) {
+    const { value: password } = formGroup.get('FormPassword') as any;
+    const { value: confirmPassword } = formGroup.get('FormPasswordConfirm') as any;
+    return password === confirmPassword ? null : { passwordNotMatch: true };
   }
 
 }

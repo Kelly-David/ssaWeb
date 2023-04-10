@@ -1,62 +1,63 @@
 <div class="container">
-    <h4>Sign up</h4>
-    <div class="line-nospacing"></div>
+  <h4>Sign up</h4>
+  <div class="line-nospacing"></div>
 
-    <div class="row d-flex justify-content-center">
-        <div class="col-lg-8">
+  <div class="row d-flex justify-content-center">
+    <div class="col-lg-8">
 
-            <app-alert-warning [text]="errorMessage!"></app-alert-warning>
+      <app-alert-warning [text]="errorMessage!"></app-alert-warning>
 
-            <form class="mb-3" *ngIf="!emailAllowed" [formGroup]="emailForm" (ngSubmit)="IsEmailAllowed()">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="formEmail">Email</span>
-                    <input type="text" class="form-control" aria-describedby="formEmail" formControlName="FormEmail"
-                        (click)="errorMessage = undefined">
-                </div>
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary" [disabled]="emailForm.invalid">Submit</button>
-                </div>
-            </form>
-
-            <form *ngIf="emailAllowed" [formGroup]="form" (ngSubmit)="SignUp()">
-
-                <app-alert-info [text]="'Your email is permitted, please complete sign up.'"></app-alert-info>
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="formUsername">Username</span>
-                    <input type="text" class="form-control" aria-describedby="formUsername"
-                        formControlName="FormUsername">
-                </div>
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="formPassword">Password</span>
-                    <input type="text" class="form-control" aria-describedby="formPassword"
-                        formControlName="FormPassword">
-                </div>
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="formFirstName">First Name</span>
-                    <input type="text" class="form-control" aria-describedby="formFirstName"
-                        formControlName="FormFirstName">
-                </div>
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="formLastName">Last Name</span>
-                    <input type="text" class="form-control" aria-describedby="formLastName"
-                        formControlName="FormLastName">
-                </div>
-
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
-                    <small class="text-center mt-3" (click)="Cancel()"><b>Cancel</b></small>
-                </div>
-            </form>
-
-            <p class="text-center mt-5">Already have an account? <a [routerLink]="['/sign-in']"><b>Click here to sign
-                        in.</b></a></p>
-
-            <p class="text-center mt-3"><small>By signing up, you agree to our Terms of Service & Privacy
-                    Policy.</small></p>
+      <form class="mb-3" *ngIf="!emailAllowed" [formGroup]="emailForm" (ngSubmit)="IsEmailAllowed()">
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="formEmail">Email</span>
+          <input type="text" class="form-control" aria-describedby="formEmail" formControlName="FormEmail"
+            (click)="errorMessage = undefined">
         </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary" [disabled]="emailForm.invalid">Submit</button>
+        </div>
+      </form>
+
+      <form *ngIf="emailAllowed" [formGroup]="form" (ngSubmit)="SignUp()">
+
+        <app-alert-info [text]="'Your email is permitted, please complete sign up.'"></app-alert-info>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="formUsername">Username</span>
+          <input type="text" autocomplete="username" class="form-control" aria-describedby="formUsername" formControlName="FormUsername">
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="formPassword">Password</span>
+          <input type="password" autocomplete="new-password" class="form-control" aria-describedby="formPassword" formControlName="FormPassword">
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="formPasswordConfirm">Password Confirm</span>
+          <input type="password" autocomplete="new-password" class="form-control" aria-describedby="formPasswordConfirm" formControlName="FormPasswordConfirm">
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="formFirstName">First Name</span>
+          <input type="text" class="form-control" aria-describedby="formFirstName" formControlName="FormFirstName">
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="formLastName">Last Name</span>
+          <input type="text" class="form-control" aria-describedby="formLastName" formControlName="FormLastName">
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
+          <small class="text-center mt-3" (click)="Cancel()"><b>Cancel</b></small>
+        </div>
+      </form>
+
+      <p class="text-center mt-5">Already have an account? <a [routerLink]="['/sign-in']"><b>Click here to sign
+            in.</b></a></p>
+
+      <p class="text-center mt-3"><small>By signing up, you agree to our Terms of Service & Privacy
+          Policy.</small></p>
     </div>
+  </div>
 </div>

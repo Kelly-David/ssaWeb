@@ -13,6 +13,7 @@ import { UserService } from '../../services/user.service';
 export class SignInComponent implements OnInit {
 
   public form: FormGroup;
+  public error: string = '';
 
   constructor(
     private userService: UserService,
@@ -52,7 +53,7 @@ export class SignInComponent implements OnInit {
       );
     }
     catch (exception: any) {
-      console.log(exception);
+      this.error = 'Username or password is incorrect';
     }
   }
 }
