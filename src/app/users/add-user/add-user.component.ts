@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
-import { PermittedEmail } from 'src/app/shared/models/permittedEmail';
-import { User, UserPermissions, UserRole } from 'src/app/shared/models/user';
+import { PermittedEmail } from 'src/app/models/permittedEmail';
+import { User, UserPermissions, UserRole } from 'src/app/models/user';
 
 @Component({
   selector: 'app-add-user',

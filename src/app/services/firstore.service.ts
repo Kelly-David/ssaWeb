@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit } from '@angular/fire/firestore';
 import { Auth, user, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, UserCredential, fetchSignInMethodsForEmail } from '@angular/fire/auth';
-import { PermittedEmail } from '../shared/models/permittedEmail';
-import { Strings } from '../shared/strings';
+import { PermittedEmail } from '../models/permittedEmail';
+import { Strings } from '../constants/strings';
 
 @Injectable({
   providedIn: 'root'

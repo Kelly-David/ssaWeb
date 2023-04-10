@@ -1,4 +1,4 @@
-import { Credentials } from './../../shared/models/credentials';
+import { Credentials } from '../../models/credentials';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';

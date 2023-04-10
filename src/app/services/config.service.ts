@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DocumentSnapshot, Firestore, collection, collectionData, doc, docSnapshots, getDoc, getDocs, onSnapshot } from '@angular/fire/firestore';
 import { Observable, from, of } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { GlobalConfiguration, Office } from '../shared/models/GlobalConfiguration';
+import { GlobalConfiguration, Office } from '../models/GlobalConfiguration';
 
 @Injectable({
   providedIn: 'root'

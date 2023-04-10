@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ConfigService } from './services/config.service';
-import { GlobalConfiguration } from './shared/models/GlobalConfiguration';
+import { GlobalConfiguration } from './models/GlobalConfiguration';
 import { Observable } from 'rxjs';
 
 @Component({

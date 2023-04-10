@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, SimpleChange, SimpleChanges, OnChanges } from '@angular/core';
-import { User } from '../../shared/models/user';
+import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
-import { PermittedEmail } from '../../shared/models/permittedEmail';
+import { PermittedEmail } from '../../models/permittedEmail';
 
 @Component({
   selector: 'app-users',
@@ -20,7 +20,7 @@ export class UsersComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
-    
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -29,7 +29,7 @@ export class UsersComponent implements OnInit, OnChanges {
 
       if (changes['input'].isFirstChange()) { // AKA initialization by angular
 
-      } else { 
+      } else {
 
       }
     }

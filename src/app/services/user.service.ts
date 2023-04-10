@@ -1,10 +1,10 @@
-import { Strings } from '../shared/strings';
+import { Strings } from '../constants/strings';
 import { Injectable } from '@angular/core';
-import { PermittedEmail } from '../shared/models/permittedEmail';
+import { PermittedEmail } from '../models/permittedEmail';
 import { Observable, from, of } from 'rxjs';
-import { User, UserPermissions, UserRole } from '../shared/models/user';
+import { User, UserPermissions, UserRole } from '../models/user';
 import { map, switchMap, take } from 'rxjs/operators';
-import { Credentials } from '../shared/models/credentials';
+import { Credentials } from '../models/credentials';
 import { DocumentChangeAction } from '@angular/fire/compat/firestore';
 import { Firestore, doc, DocumentSnapshot, getDoc, updateDoc, addDoc, where, query, collectionData, collection, DocumentData, setDoc, orderBy, startAt, limit, QueryConstraint, getDocs } from '@angular/fire/firestore';
 import { Auth, user, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, UserCredential, fetchSignInMethodsForEmail } from '@angular/fire/auth';

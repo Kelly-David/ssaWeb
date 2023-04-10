@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, pipe } from 'rxjs';
-import { User } from 'src/app/shared/models/user';
+import { User } from 'src/app/models/user';
 import { UserService } from '../../services/user.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';

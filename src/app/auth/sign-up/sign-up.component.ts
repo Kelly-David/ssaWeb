@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { Credentials } from '../../shared/models/credentials';
+import { Credentials } from '../../models/credentials';
 import { take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
