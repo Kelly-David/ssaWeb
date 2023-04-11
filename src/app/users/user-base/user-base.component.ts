@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, pipe } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { UserService } from '../../services/user.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { UserFilter } from 'src/app/models/filters';
 
@@ -18,7 +18,6 @@ export class UserBaseComponent implements OnInit {
   public users!: Observable<User[] | null>;
   public searchTerm!: string;
   public form: FormGroup;
-  public filterError: string = '';
 
   private userFilter: UserFilter;
 
@@ -32,6 +31,10 @@ export class UserBaseComponent implements OnInit {
       'FormCheckbox_glebelands' : [{ value: false, disabled: true }],
       'FormCheckbox_admin' : [{ value: false, disabled: false }],
       'FormCheckbox_archived' : [{ value: false, disabled: false }]
+    },
+    {
+      validators: this.ValidateOfficeSelection.bind(this),
+      updateOn: 'change'
     });
 
     this.userFilter = {
@@ -89,18 +92,25 @@ export class UserBaseComponent implements OnInit {
     this.userFilter.includeAdmin = this.FormCheckbox_admin ?? false;
     this.userFilter.includeArchived = this.FormCheckbox_archived ?? false;
 
-    if (this.userFilter.offices.length > 0) {
-      this.filterError = '';
-      this.FetchUsers();
-    }
-    else{
-      this.filterError = 'You must select at least one office';
-    }
+    this.FetchUsers();
   }
 
   private FetchUsers() {
 
     this.users = this.userService.GetUsersAsync("Staff", 0, 200,
     this.userFilter.includeArchived, this.userFilter.offices, this.userFilter.includeAdmin);
+  }
+
+  private ValidateOfficeSelection(formGroup: AbstractControl) {
+    if (formGroup.get('FormCheckbox_churchrd')?.value == true) {
+      return null;
+    }
+    if (formGroup.get('FormCheckbox_coneyboro')?.value == true) {
+      return null;
+    }
+    if (formGroup.get('FormCheckbox_glebelands')?.value == true) {
+      return null;
+    }
+    return { officesSelected: false };
   }
 }
