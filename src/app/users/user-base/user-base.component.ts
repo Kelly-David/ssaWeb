@@ -4,6 +4,7 @@ import { User } from 'src/app/models/user';
 import { UserService } from '../../services/user.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
+import { UserFilter } from 'src/app/models/filters';
 
 @Component({
   selector: 'app-user-base',
@@ -102,10 +103,4 @@ export class UserBaseComponent implements OnInit {
     this.users = this.userService.GetUsersAsync("Staff", 0, 200,
     this.userFilter.includeArchived, this.userFilter.offices, this.userFilter.includeAdmin);
   }
-}
-
-export interface UserFilter {
-  offices: string[],
-  includeAdmin: boolean,
-  includeArchived: boolean,
 }

@@ -4,8 +4,14 @@
 @import "~@fortawesome/fontawesome-free/scss/regular.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 
+
+html {
+  font-size: 12px;
+}
+
 body {
-    color: #333;
+    color: #4d5153;
+    background-color: #fafbfe;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -25,14 +31,14 @@ nav {
     .navbar-brand {
         color: whitesmoke;
         font-size: 1rem;
-    } 
+    }
     .navbar-brand:hover {
         color: whitesmoke;
     }
 }
 
 .main {
-    padding-top: 70px;
+    padding-top: 60px;
 }
 
 .line-nospacing {
@@ -55,3 +61,14 @@ p {
         color: #333;
     }
 }
+
+.card {
+  padding: 0.5rem;
+}
+
+.list-group-item {
+  padding-top: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+

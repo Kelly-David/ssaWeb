@@ -1,4 +1,3 @@
-import { Timestamp } from 'firebase/firestore';
 import { Base } from './base';
 
 

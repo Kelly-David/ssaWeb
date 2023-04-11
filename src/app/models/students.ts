@@ -1,6 +1,6 @@
 import { Base } from './base';
 
-export class Child implements Base, IChild {
+export class Student implements Base, IStudent {
 
   public Id: string;
 
@@ -8,9 +8,15 @@ export class Child implements Base, IChild {
 
   public LastName: string;
 
-  public CreatedDateTime: Date;
+  public DateOfBirth: string;
 
-  public UpdatedDateTime?: Date;
+  public Gender: string;
+
+  public IsToiletTrained: boolean = false;
+
+  public CreatedDateTime: any;
+
+  public UpdatedDateTime?: any;
 
   public IsArchived: boolean = false;
 
@@ -18,19 +24,40 @@ export class Child implements Base, IChild {
 
   public Room?: string;
 
-  constructor(child: IChild) {
-    this.Id = child.Id ?? undefined;
-    this.FirstName = child.FirstName  ?? undefined;
-    this.LastName = child.LastName  ?? undefined;
-    this.Office = child.Office ?? undefined;
-    this.CreatedDateTime = child.CreatedDateTime ?? undefined;
-    this.UpdatedDateTime = child.UpdatedDateTime ?? undefined;
-    this.IsArchived = child.IsArchived ?? undefined;
-    this.Room = child.Room ?? undefined;
+  constructor(student: IStudent) {
+    this.Id = student.Id ?? undefined;
+    this.FirstName = student.FirstName ?? undefined;
+    this.LastName = student.LastName ?? undefined;
+    this.Office = student.Office ?? undefined;
+    this.CreatedDateTime = student.CreatedDateTime ?? undefined;
+    this.UpdatedDateTime = student.UpdatedDateTime ?? undefined;
+    this.IsArchived = student.IsArchived ?? false;
+    this.Room = student.Room ?? undefined;
+    this.DateOfBirth = student.DateOfBirth ?? undefined;
+    this.Gender = student.Gender?? undefined;
+    this.IsToiletTrained = student.IsToiletTrained?? false;
+  }
+
+  get GetCreatedDateString(): string {
+
+    return (this.CreatedDateTime.toDate() as Date).toUTCString();
+  }
+
+  get GetUpdatedDateString(): string {
+
+    return this.UpdatedDateTime != undefined ? (this.UpdatedDateTime.toDate() as Date).toUTCString() : this.GetCreatedDateString;
+  }
+
+  public get FullName(): string {
+    return this.FirstName + ' ' + this.LastName;
+  }
+
+  get ToPlainObj(): object {
+    return Object.assign({}, this);
   }
 }
 
-export interface IChild {
+export interface IStudent {
 
   Id: string;
   FirstName: string;
@@ -40,6 +67,9 @@ export interface IChild {
   IsArchived: boolean;
   Office: string;
   Room?: string;
+  DateOfBirth: string;
+  IsToiletTrained: boolean;
+  Gender: string;
 }
 
 export class Day {

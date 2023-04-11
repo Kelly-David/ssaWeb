@@ -1,7 +1,8 @@
 <ng-container *ngIf="authUser$ | async as user">
 
-  <div class="d-flex w-100 justify-content-between align-items-center">
+  <div class="d-flex w-100 justify-content-between align-items-center mb-1">
     <h4>Staff</h4>
+    <small>{{user.FullName}} ({{user.GetHighestPermissions}})</small>
   </div>
 
   <div class="d-flex w-100 justify-content-between align-items-center">
@@ -23,19 +24,15 @@
   <ng-container *ngIf="user.IsAdmin">
     <div class="row collapse mb-3" id="collapseAddUser">
       <div class="col">
-        <div class="card">
-          <div class="card-body">
-
-           <app-add-user [authUser]="user"></app-add-user>
-
-          </div>
-        </div>
+        <app-add-user [authUser]="user"></app-add-user>
       </div>
     </div>
   </ng-container>
 
   <div class="row collapse mb-3" id="collapseFilter">
     <div class="col">
+      <h5>Filters</h5>
+
       <div class="card">
         <div class="card-body">
 

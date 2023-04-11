@@ -1,0 +1,38 @@
+<ng-container *ngIf="student != undefined">
+  <dl class="row">
+
+    <dt class="col-sm-3">Id</dt>
+    <dd class="col-sm-9">{{student.Id | uppercase}}</dd>
+
+    <dt class="col-sm-3">First Name</dt>
+    <dd class="col-sm-9">{{student.FirstName}}</dd>
+
+    <dt class="col-sm-3">Last Name</dt>
+    <dd class="col-sm-9">{{student.LastName}}</dd>
+
+    <dt class="col-sm-3">Gender</dt>
+    <dd class="col-sm-9">{{student.Gender}}</dd>
+
+    <dt class="col-sm-3">DateOfBirth</dt>
+    <dd class="col-sm-9">{{student.DateOfBirth}}</dd>
+
+    <dt class="col-sm-3">Toilet Trained</dt>
+    <dd class="col-sm-9">{{(student.IsToiletTrained).toString() | titlecase}}</dd>
+
+    <dt class="col-sm-3">Classroom</dt>
+    <dd class="col-sm-9">{{student.Room ?? '(Unassigned)' | titlecase}}</dd>
+
+    <dt class="col-sm-3">Locale</dt>
+    <dd class="col-sm-9">{{student.Office | titlecase}}</dd>
+
+    <dt class="col-sm-3">Created DateTime</dt>
+    <dd class="col-sm-9">{{student.GetCreatedDateString}}</dd>
+
+    <dt class="col-sm-3">Updated DateTime</dt>
+    <dd class="col-sm-9">{{student.GetUpdatedDateString}}</dd>
+
+    <dt class="col-sm-3">Archived</dt>
+    <dd class="col-sm-9">{{(student.IsArchived).toString() | titlecase}}</dd>
+
+  </dl>
+</ng-container>

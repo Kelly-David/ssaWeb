@@ -8,6 +8,7 @@ import { NavigationModule } from './navigation/navigation.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { UsersModule } from './users/users.module';
+import { StudentsModule } from './students/students.module';
 
 @NgModule({
   declarations: [
@@ -17,11 +18,12 @@ import { UsersModule } from './users/users.module';
     BrowserModule,
     AppRoutingModule,
     CoreModule,
-    BrowserAnimationsModule, 
+    BrowserAnimationsModule,
     AuthModule,
     NavigationModule,
     DashboardModule,
-    UsersModule
+    UsersModule,
+    StudentsModule
   ],
   providers: [ ],
   bootstrap: [AppComponent]

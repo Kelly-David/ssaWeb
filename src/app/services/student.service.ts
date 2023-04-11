@@ -1,31 +1,31 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Child } from '../models/child';
 import { Strings } from '../constants/strings';
 import { Firestore, QueryConstraint, collection, collectionData, query, where } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
+import { Student } from '../models/students';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChildrenService {
+export class StudentService {
 
   constructor(private firestore: Firestore) { }
 
-  public GetUsersAsync(offices: string[]): Observable<Child[]> {
+  public GetStudentsAsync(offices: string[]): Observable<Student[]> {
 
-    const childCollection = collection(this.firestore, Strings.ChildrenCollection);
+    const studentCollection = collection(this.firestore, Strings.StudentCollection);
 
     var constraints: QueryConstraint[] = []
 
     constraints.push(where('Office', 'in', offices));
 
-    const childQuery = query(childCollection, ...constraints);
+    const studentsQuery = query(studentCollection, ...constraints);
 
-    return collectionData(childQuery).pipe(map(documents => {
-      let users = documents;
-      return users.map(document => {
-        return new Child(document as Child);
+    return collectionData(studentsQuery).pipe(map(documents => {
+      let students = documents;
+      return students.map(document => {
+        return new Student(document as Student);
       })
     }));
 
