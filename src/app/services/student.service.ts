@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Strings } from '../constants/strings';
-import { Firestore, QueryConstraint, collection, collectionData, query, where } from '@angular/fire/firestore';
+import { Firestore, QueryConstraint, addDoc, collection, collectionData, doc, query, setDoc, where } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import { Student } from '../models/students';
 
@@ -28,6 +28,25 @@ export class StudentService {
         return new Student(document as Student);
       })
     }));
+  }
+
+  public async InsertStudentAsync(student: Student): Promise<boolean> {
+
+    const collectionRef = collection(this.firestore, Strings.StudentCollection);
+
+    const docRef = doc(collectionRef);
+
+    student.Id = docRef.id;
+
+    console.log(student);
+
+    try {
+      await setDoc(docRef, <Student>student.ToPlainObj);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
 
   }
 }

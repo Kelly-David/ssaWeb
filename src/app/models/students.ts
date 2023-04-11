@@ -25,14 +25,14 @@ export class Student implements Base, IStudent {
   public Room?: string;
 
   constructor(student: IStudent) {
-    this.Id = student.Id ?? undefined;
+    this.Id = student.Id ?? '';
     this.FirstName = student.FirstName ?? undefined;
     this.LastName = student.LastName ?? undefined;
     this.Office = student.Office ?? undefined;
     this.CreatedDateTime = student.CreatedDateTime ?? undefined;
-    this.UpdatedDateTime = student.UpdatedDateTime ?? undefined;
+    this.UpdatedDateTime = student.UpdatedDateTime;
     this.IsArchived = student.IsArchived ?? false;
-    this.Room = student.Room ?? undefined;
+    this.Room = student.Room;
     this.DateOfBirth = student.DateOfBirth ?? undefined;
     this.Gender = student.Gender?? undefined;
     this.IsToiletTrained = student.IsToiletTrained?? false;
@@ -53,13 +53,18 @@ export class Student implements Base, IStudent {
   }
 
   get ToPlainObj(): object {
-    return Object.assign({}, this);
+
+    let obj = this as any;
+
+    Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
+
+    return Object.assign({}, obj);
   }
 }
 
 export interface IStudent {
 
-  Id: string;
+  Id?: string;
   FirstName: string;
   LastName: string;
   CreatedDateTime: Date;

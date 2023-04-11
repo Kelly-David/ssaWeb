@@ -15,7 +15,7 @@
     <dt class="col-sm-3">Role</dt>
     <dd class="col-sm-9">{{user.Role}} ({{user.GetHighestPermissions}})</dd>
 
-    <dt class="col-sm-3">Offices</dt>
+    <dt class="col-sm-3">Locale(s)</dt>
     <dd class="col-sm-9">
       <p *ngFor="let office of user.Offices">{{office | titlecase}}</p>
     </dd>

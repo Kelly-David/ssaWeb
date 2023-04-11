@@ -21,7 +21,8 @@ import { CollectionFilterPipe } from './pipes/collection-filter.pipe';
     FormsModule,
     CommonModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
   ],
   exports: [
     AppRoutingModule,
@@ -31,8 +32,8 @@ import { CollectionFilterPipe } from './pipes/collection-filter.pipe';
     AlertInfoComponent,
     AlertSuccessComponent,
     FormsModule,
-    CollectionFilterPipe
+    CollectionFilterPipe,
+
   ]
 })
 export class SharedModule { }
- 

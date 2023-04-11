@@ -24,7 +24,7 @@
   <ng-container *ngIf="user.IsAdmin">
     <div class="row collapse mb-3" id="collapseAddStudent">
       <div class="col">
-        <!-- <app-add-user [authUser]="user"></app-add-user> -->
+         <app-add-student [authUser]="user"></app-add-student>
       </div>
     </div>
   </ng-container>
@@ -38,7 +38,7 @@
 
           <form [formGroup]="filterForm" (ngSubmit)="SubmitFilterForm()">
 
-            <h6>Offices</h6>
+            <h6>Locale</h6>
 
             <div class="d-flex justify-content-between">
 

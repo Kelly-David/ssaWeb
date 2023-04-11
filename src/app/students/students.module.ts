@@ -4,12 +4,14 @@ import { SharedModule } from '../shared/shared.module';
 import { StudentItemComponent } from './student-item/student-item.component';
 import { StudentsComponent } from './students/students.component';
 import { StudentsBaseComponent } from './students-base/students-base.component';
+import { AddStudentComponent } from './add-student/add-student.component';
 
 @NgModule({
   declarations: [
     StudentItemComponent,
     StudentsComponent,
-    StudentsBaseComponent
+    StudentsBaseComponent,
+    AddStudentComponent
   ],
   imports: [
     CommonModule,
