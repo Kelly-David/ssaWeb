@@ -4,6 +4,9 @@
 @import "~@fortawesome/fontawesome-free/scss/regular.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 
+//Ng-select
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
 
 html {
   font-size: 12px;
@@ -70,5 +73,16 @@ p {
   padding-top: 1rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
+}
+
+.ng-select .ng-select-container {
+  min-height: 29px;
+}
+.ng-select.ng-select-single .ng-select-container {
+
+  height: 29px !important;
+
+
+
 }
 

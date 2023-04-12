@@ -12,13 +12,14 @@ export class StudentService {
 
   constructor(private firestore: Firestore) { }
 
-  public GetStudentsAsync(offices: string[]): Observable<Student[]> {
+  public GetStudentsAsync(offices: string[], isArchived: boolean = false): Observable<Student[]> {
 
     const studentCollection = collection(this.firestore, Strings.StudentCollection);
 
     var constraints: QueryConstraint[] = []
 
     constraints.push(where('Office', 'in', offices));
+    constraints.push(where("IsArchived", "==", isArchived));
 
     const studentsQuery = query(studentCollection, ...constraints);
 

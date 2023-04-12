@@ -20,9 +20,15 @@ export class Student implements Base, IStudent {
 
   public IsArchived: boolean = false;
 
+  public ArchivedDateTime?: any;
+
   public Office: string;
 
   public Room?: string;
+
+  public IsPartTime: boolean = false;
+
+  public IsNonSleeper: boolean = false;
 
   constructor(student: IStudent) {
     this.Id = student.Id ?? '';
@@ -32,10 +38,13 @@ export class Student implements Base, IStudent {
     this.CreatedDateTime = student.CreatedDateTime ?? undefined;
     this.UpdatedDateTime = student.UpdatedDateTime;
     this.IsArchived = student.IsArchived ?? false;
+    this.ArchivedDateTime = student.ArchivedDateTime;
     this.Room = student.Room;
     this.DateOfBirth = student.DateOfBirth ?? undefined;
     this.Gender = student.Gender?? undefined;
     this.IsToiletTrained = student.IsToiletTrained?? false;
+    this.IsPartTime = student.IsPartTime?? false;
+    this.IsNonSleeper = student.IsNonSleeper?? false;
   }
 
   get GetCreatedDateString(): string {
@@ -52,12 +61,19 @@ export class Student implements Base, IStudent {
     return this.FirstName + ' ' + this.LastName;
   }
 
+  public get DateOfBirthString(): string {
+
+    let date = new Date(this.DateOfBirth);
+    let dateOfBirthString = (date.getDay() < 10 ? '0' + date.getDay() : date.getDay()) as string;
+    dateOfBirthString += ((date.getMonth() + 1) < 10 ? '/0' + (date.getMonth() + 1) : '/' + (date.getMonth() + 1)) as string;
+    dateOfBirthString += '/' + date.getFullYear();
+    return dateOfBirthString;
+  }
+
   get ToPlainObj(): object {
 
     let obj = this as any;
-
     Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
-
     return Object.assign({}, obj);
   }
 }
@@ -70,11 +86,14 @@ export interface IStudent {
   CreatedDateTime: Date;
   UpdatedDateTime?: Date;
   IsArchived: boolean;
+  ArchivedDateTime?: Date;
   Office: string;
   Room?: string;
   DateOfBirth: string;
   IsToiletTrained: boolean;
   Gender: string;
+  IsPartTime: boolean;
+  IsNonSleeper: boolean;
 }
 
 export class Day {

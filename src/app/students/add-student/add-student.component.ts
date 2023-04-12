@@ -18,6 +18,10 @@ export class AddStudentComponent implements OnChanges {
 
   public error: string = '';
   public info: string = '';
+  public ScheduleSelectOptions = [
+    { id: 'full-time', name: 'Full time' },
+    { id: 'part-time', name: 'Part time' },
+  ]
 
   private _student!: Student | undefined;
 
@@ -43,17 +47,13 @@ export class AddStudentComponent implements OnChanges {
       'Form_dateOfBirth': [
         { value: '', disabled: false },
         [
-          Validators.required,
-          Validators.minLength(10),
-          Validators.maxLength(10),
-          Validators.pattern('^[0-9]{2}/[0-9]{2}/[0-9]{4}$')
+          Validators.required
         ]],
       'FormCheckbox_genderBoy': [{ value: false, disabled: false }],
       'FormCheckbox_genderGirl': [{ value: false, disabled: false }],
       'FormCheckbox_isToiletTrained': [{ value: false, disabled: false }],
       'FormCheckbox_isNonSleeper': [{ value: false, disabled: false }],
-      'FormSelect_FullPartTime': [{ value: false, disabled: false }, [Validators.required]],
-
+      'FormCheckbox_isPartTime': [{ value: false, disabled: false }],
       'FormCheckbox_churchrd': [{ value: false, disabled: true }],
       'FormCheckbox_coneyboro': [{ value: false, disabled: true }],
       'FormCheckbox_glebelands': [{ value: false, disabled: true }],
@@ -76,39 +76,37 @@ export class AddStudentComponent implements OnChanges {
 
   get FormFirstName(): string { return this.studentForm.get('Form_firstName')?.value };
   get FormLastName(): string { return this.studentForm.get('Form_lastName')?.value };
-  get FormDateOfBirth(): string { return this.studentForm.get('Form_dateOfBirth')?.value };
+  get FormDateOfBirthDay(): string { return this.studentForm.get('Form_dateOfBirth')?.value };
   get FormGenderBoy(): boolean { return this.studentForm.get('FormCheckbox_genderBoy')?.value };
   get FormGenderGirl(): boolean { return this.studentForm.get('FormCheckbox_genderGirl')?.value };
   get FormIsToiletTrained(): boolean { return this.studentForm.get('FormCheckbox_isToiletTrained')?.value };
   get FormChurchrd(): boolean { return this.studentForm.get('FormCheckbox_churchrd')?.value };
   get FormConeyboro(): boolean { return this.studentForm.get('FormCheckbox_coneyboro')?.value };
   get FormGlebelands(): boolean { return this.studentForm.get('FormCheckbox_glebelands')?.value };
-
-  get FormSelect_FullPartTime() { return this.studentForm.get('FormSelect_FullPartTime'); }
-
-  public GetFormSelectFullPartTimeChange(e: any) {
-    this.FormSelect_FullPartTime?.setValue(e.target.value, { onlySelf: true});
-  }
-
+  get FormIsPartTime(): boolean { return this.studentForm.get('FormCheckbox_isPartTime')?.value };
+  get FormIsNonSleeper(): boolean { return this.studentForm.get('FormCheckbox_isNonSleeper')?.value };
 
   public async SubmitStudentForm(): Promise<void> {
 
     const selectedOffice = this.GetSelectedOffice();
     const selectedGender = this.GetSelectedGender();
+    const dateOfBirth = this.GetDateOfBirth();
 
     this._student = new Student(<IStudent>{
       FirstName: this.FormFirstName,
       LastName: this.FormLastName,
       CreatedDateTime: new Date(),
-      IsArchived: true,
+      IsArchived: false,
       Office: selectedOffice,
-      DateOfBirth: this.FormDateOfBirth,
+      DateOfBirth: dateOfBirth,
       IsToiletTrained: this.FormIsToiletTrained,
-      Gender: selectedGender
+      Gender: selectedGender,
+      IsNonSleeper: this.FormIsNonSleeper,
+      IsPartTime: this.FormIsPartTime
     });
 
     if (await this.studentService.InsertStudentAsync(this._student)) {
-      this.info = 'Student added successfully';
+      this.info = 'Student successfully added';
       this.ClearForm();
     }
   }
@@ -120,33 +118,20 @@ export class AddStudentComponent implements OnChanges {
   }
 
   private GetSelectedGender(): string | undefined {
-
-    if (this.FormGenderBoy) {
-      return 'Boy';
-    }
-
-    if (this.FormGenderGirl) {
-      return 'Girl';
-    }
-
+    if (this.FormGenderBoy) { return 'Boy'; }
+    if (this.FormGenderGirl) { return 'Girl'; }
     return undefined;
   }
 
   private GetSelectedOffice(): string | undefined {
-
-    if (this.FormChurchrd) {
-      return 'churchrd';
-    }
-
-    if (this.FormConeyboro) {
-      return 'coneyboro';
-    }
-
-    if (this.FormGlebelands) {
-      return 'glebelands';
-    }
-
+    if (this.FormChurchrd) { return 'churchrd'; }
+    if (this.FormConeyboro) { return 'coneyboro'; }
+    if (this.FormGlebelands) { return 'glebelands'; }
     return undefined;
+  }
+
+  private GetDateOfBirth(): string {
+    return this.FormDateOfBirthDay;
   }
 
   private ValidateOfficeSelection(formGroup: AbstractControl) {

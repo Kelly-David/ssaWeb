@@ -92,7 +92,7 @@ export class StudentsBaseComponent implements OnInit {
   }
 
   private FetchStudents() {
-    this.students$ = this.studentService.GetStudentsAsync(this.filter.offices);
+    this.students$ = this.studentService.GetStudentsAsync(this.filter.offices, this.filter.includeArchived);
   }
 
   private ValidateOfficeSelection(formGroup: AbstractControl) {

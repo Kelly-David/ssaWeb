@@ -8,6 +8,7 @@ import { AlertInfoComponent } from './components/alert-info/alert-info.component
 import { AlertSuccessComponent } from './components/alert-success/alert-success.component';
 import { FormsModule } from '@angular/forms';
 import { CollectionFilterPipe } from './pipes/collection-filter.pipe';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { CollectionFilterPipe } from './pipes/collection-filter.pipe';
     CommonModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    NgSelectModule
 
   ],
   exports: [
@@ -33,7 +35,7 @@ import { CollectionFilterPipe } from './pipes/collection-filter.pipe';
     AlertSuccessComponent,
     FormsModule,
     CollectionFilterPipe,
-
+    NgSelectModule
   ]
 })
 export class SharedModule { }
