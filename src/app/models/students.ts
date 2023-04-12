@@ -71,7 +71,6 @@ export class Student implements Base, IStudent {
   }
 
   get ToPlainObj(): object {
-
     let obj = this as any;
     Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
     return Object.assign({}, obj);
