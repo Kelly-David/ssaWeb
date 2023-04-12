@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { UsersModule } from './users/users.module';
 import { StudentsModule } from './students/students.module';
+import { RoomsModule } from './rooms/rooms.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { StudentsModule } from './students/students.module';
     NavigationModule,
     DashboardModule,
     UsersModule,
-    StudentsModule
+    StudentsModule,
+    RoomsModule
   ],
   providers: [ ],
   bootstrap: [AppComponent]

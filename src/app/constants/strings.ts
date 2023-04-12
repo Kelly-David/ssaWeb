@@ -8,4 +8,6 @@ export class Strings {
     static StudentDaysCollection = 'Days' as string;
     static ConfigurationCollection = 'Configuration' as string;
     static OfficesCollection = 'Offices' as string;
+    static RoomsCollection = 'Rooms' as string;
+
 }

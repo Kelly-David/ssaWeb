@@ -1,0 +1,13 @@
+<div class="list-group">
+  <a class="list-group-item list-group-item-action" *ngFor="let room of rooms">
+      <div class="d-flex w-100 justify-content-between align-items-center">
+          <h6 class="mb-1">{{room.Name }}</h6>
+          <button class="btn" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse' + room.Id">
+              <small><i class="fas fa-chevron-circle-down"></i></small>
+          </button>
+      </div>
+      <div class="collapse" [attr.id]="'collapse' + room.Id">
+          <!-- <app-student-item [student]="student"></app-student-item> -->
+      </div>
+  </a>
+</div>
