@@ -4,7 +4,8 @@ import { User } from 'src/app/models/user';
 import { UserService } from '../../services/user.service';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
-import { UserFilter } from 'src/app/models/filters';
+import { ListFilter } from 'src/app/models/filters';
+import { PageType } from 'src/app/models/web';
 
 @Component({
   selector: 'app-user-base',
@@ -17,100 +18,39 @@ export class UserBaseComponent implements OnInit {
   public authUser$: Observable<any>;
   public users!: Observable<User[] | null>;
   public searchTerm!: string;
-  public form: FormGroup;
+  public hideSidebar = false;
+  public selectedUser: User | undefined;
+  public PageType = PageType.User;
 
-  private userFilter: UserFilter;
+  private filter!: ListFilter;
 
-  constructor(private userService: UserService, private formBuilder: FormBuilder) {
+  constructor(private userService: UserService) {
 
     this.authUser$ = this.userService.LoggedInUser;
-
-    this.form = formBuilder.group({
-      'FormCheckbox_churchrd' : [{ value: false, disabled: true }],
-      'FormCheckbox_coneyboro' : [{ value: false, disabled: true }],
-      'FormCheckbox_glebelands' : [{ value: false, disabled: true }],
-      'FormCheckbox_admin' : [{ value: false, disabled: false }],
-      'FormCheckbox_archived' : [{ value: false, disabled: false }]
-    },
-    {
-      validators: this.ValidateOfficeSelection.bind(this),
-      updateOn: 'change'
-    });
-
-    this.userFilter = {
-      offices: [],
-      includeAdmin: false,
-      includeArchived: false,
-    }
    }
 
-  get FormCheckbox_churchrd(): boolean | undefined { return this.form.get('FormCheckbox_churchrd')?.value }
-  get FormCheckbox_coneyboro(): boolean | undefined { return this.form.get('FormCheckbox_coneyboro')?.value }
-  get FormCheckbox_glebelands(): boolean | undefined { return this.form.get('FormCheckbox_glebelands')?.value }
-  get FormCheckbox_admin(): boolean | undefined { return this.form.get('FormCheckbox_admin')?.value }
-  get FormCheckbox_archived(): boolean | undefined { return this.form.get('FormCheckbox_archived')?.value }
-
   ngOnInit(): void {
-
-    this.userService.LoggedInUser.pipe(take(1)).subscribe(user => {
-      if (user) {
-
-        this.userFilter.offices = user.Offices;
-
-        user.Offices.forEach(office => {
-          const officeFormControlName = 'FormCheckbox_' + office;
-          this.form.get(officeFormControlName)?.setValue(true);
-          this.form.get(officeFormControlName)?.enable();
-        });
-
-        if (!user.Permissions.Admin) {
-          this.form.get('FormCheckbox_admin')?.disable();
-          this.form.get('FormCheckbox_archived')?.disable();
-        }
-
-        this.FetchUsers();
-      }
-    });
   }
 
-  public SubmitFilterForm(): void {
-
-    this.userFilter.offices = [];
-
-    if (this.FormCheckbox_churchrd) {
-      this.userFilter.offices.push('churchrd');
-    }
-
-    if (this.FormCheckbox_coneyboro) {
-      this.userFilter.offices.push('coneyboro');
-    }
-
-    if (this.FormCheckbox_glebelands) {
-      this.userFilter.offices.push('glebelands');
-    }
-
-    this.userFilter.includeAdmin = this.FormCheckbox_admin ?? false;
-    this.userFilter.includeArchived = this.FormCheckbox_archived ?? false;
-
-    this.FetchUsers();
+  public GetSelectedUser($event: any): void {
+    this.selectedUser = $event;
   }
 
-  private FetchUsers() {
+  public SearchTermChanged($event: any): void {
+    this.searchTerm = $event;
+  }
 
+  public SidebarChanged($event: any): void {
+    this.hideSidebar = $event;
+  }
+
+  public ReceiveFilters($event: any):void {
+    this.FetchUsers($event as ListFilter);
+  }
+
+  private FetchUsers(filter: ListFilter) {
     this.users = this.userService.GetUsersAsync("Staff", 0, 200,
-    this.userFilter.includeArchived, this.userFilter.offices, this.userFilter.includeAdmin);
+    filter.includeArchived, filter.offices, filter.includeAdmin);
   }
 
-  private ValidateOfficeSelection(formGroup: AbstractControl) {
-    if (formGroup.get('FormCheckbox_churchrd')?.value == true) {
-      return null;
-    }
-    if (formGroup.get('FormCheckbox_coneyboro')?.value == true) {
-      return null;
-    }
-    if (formGroup.get('FormCheckbox_glebelands')?.value == true) {
-      return null;
-    }
-    return { officesSelected: false };
-  }
 }

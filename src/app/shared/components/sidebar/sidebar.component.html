@@ -1,0 +1,14 @@
+<ng-container *ngIf="!hidden">
+  <div class="col-sm-3 col-md-4 side-content">
+
+    <app-list-filter [authUser]="authUser" (filterChanged)="ReceiveSelectedFilters($event)"></app-list-filter>
+
+    <div class="row">
+      <div class="col">
+        <app-list-view [inputItems]="listItems | collectionFilter: searchTerm : 'DisplayName'"
+          (SelectedItemChange)="ReceiveSelectedObject($event)"></app-list-view>
+      </div>
+    </div>
+
+  </div>
+</ng-container>

@@ -9,6 +9,10 @@ import { AlertSuccessComponent } from './components/alert-success/alert-success.
 import { FormsModule } from '@angular/forms';
 import { CollectionFilterPipe } from './pipes/collection-filter.pipe';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ViewNavComponent } from './components/view-nav/view-nav.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ListViewComponent } from './components/list-view/list-view.component';
+import { ListFilterComponent } from './components/list-filter/list-filter.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +20,11 @@ import { NgSelectModule } from '@ng-select/ng-select';
     AlertWarningComponent,
     AlertInfoComponent,
     AlertSuccessComponent,
-    CollectionFilterPipe
+    CollectionFilterPipe,
+    ViewNavComponent,
+    SidebarComponent,
+    ListViewComponent,
+    ListFilterComponent
   ],
   imports: [
     FormsModule,
@@ -35,7 +43,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
     AlertSuccessComponent,
     FormsModule,
     CollectionFilterPipe,
-    NgSelectModule
+    NgSelectModule,
+    ViewNavComponent,
+    SidebarComponent
   ]
 })
 export class SharedModule { }

@@ -1,7 +1,8 @@
-export interface UserFilter {
-  offices: string[],
-  includeAdmin: boolean,
-  includeArchived: boolean,
+export interface ListFilter {
+  offices?: string[],
+  rooms?: string[],
+  includeAdmin?: boolean,
+  includeArchived?: boolean,
 }
 
 export interface StudentFilter {

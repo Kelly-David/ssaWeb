@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChange, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChange, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
 import { PermittedEmail } from '../../models/permittedEmail';
@@ -11,6 +11,7 @@ import { PermittedEmail } from '../../models/permittedEmail';
 export class UsersComponent implements OnInit, OnChanges {
 
   @Input() userList: User[] | null | undefined;
+  @Output() selectedUserEvent = new EventEmitter<User>();
 
   public users: User[] | null | undefined;
   public emails: PermittedEmail[] | null | undefined;
@@ -34,5 +35,10 @@ export class UsersComponent implements OnInit, OnChanges {
       }
     }
   }
+
+  SelectUser(user: User) {
+    this.selectedUserEvent.emit(user);
+  }
+
 }
 

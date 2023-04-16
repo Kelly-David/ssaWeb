@@ -1,10 +1,11 @@
 <app-nav-bar></app-nav-bar>
+<div class="main"></div>
 
-<div class="container main">
+<div class="container-fluid">
   <router-outlet></router-outlet>
 </div>
 
-<div class="container d-flex justify-content-end mt-3">
+<div class="container-fluid d-flex justify-content-end mt-3">
   <small>{{(globalConfig | async)?.Environment}}</small>
 </div>
 

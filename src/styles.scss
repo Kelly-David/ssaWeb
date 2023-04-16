@@ -13,7 +13,6 @@ html {
 }
 
 body {
-    color: #4d5153;
     background-color: #fafbfe;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
@@ -29,19 +28,25 @@ svg#clouds {
   }
 
 nav {
-    background-color: #1976d2;
+    background-color: #2f2f4f;
+    box-shadow: 0px 0px 1px #090910;
 
     .navbar-brand {
-        color: whitesmoke;
+        color: #bebec9;
         font-size: 1rem;
     }
     .navbar-brand:hover {
-        color: whitesmoke;
+        color: #bebec9;
     }
 }
 
 .main {
-    padding-top: 60px;
+    padding-top: 120px;
+
+    @media only screen and (max-width: 600px) {
+      padding-top: 150px;
+    }
+
 }
 
 .line-nospacing {
@@ -81,8 +86,41 @@ p {
 .ng-select.ng-select-single .ng-select-container {
 
   height: 29px !important;
-
-
-
 }
 
+.side-content {
+  position: fixed;
+  top: 120px;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  display: block;
+  padding: 0 10px 10px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+
+  @media only screen and (max-width: 600px) {
+    top: 150px;
+  }
+}
+
+.view-title {
+  background-color: #3f2f4f;
+  position: fixed;
+  top: 54.5px;
+  right: 0;
+  left: 0;
+  z-index: 1029;
+  color: #bebec9;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  .btn {
+    color: #bebec9
+  }
+
+  h4 {
+    display: inline;
+    margin-bottom: 0;
+  }
+}
