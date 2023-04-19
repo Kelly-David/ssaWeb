@@ -26,7 +26,6 @@ export class UserBaseComponent implements OnInit {
   private filter!: ListFilter;
 
   constructor(private userService: UserService, private viewStateService: ViewStateService) {
-
     this.authUser$ = this.userService.LoggedInUser;
    }
 

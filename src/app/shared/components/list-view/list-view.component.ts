@@ -29,6 +29,13 @@ export class ListViewComponent implements OnChanges {
           Object: item
         } as ListItem;
       }
+      else if (item instanceof Student) {
+        return {
+          Id: item.Id,
+          DisplayName: item.FullName,
+          Object: item
+        } as ListItem;
+      }
       else {
         throw new Error('Unknown item type');
       }

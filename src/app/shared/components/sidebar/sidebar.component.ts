@@ -12,6 +12,7 @@ export class SidebarComponent implements OnInit {
 
   @Input() authUser!: User;
   @Input() searchTerm!: string;
+  @Input() filterProperty!: string;
   @Input() listItems!: any[] | null;
 
   @Output() selectedObject = new EventEmitter<any>();

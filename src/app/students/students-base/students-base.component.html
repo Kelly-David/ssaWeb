@@ -1,109 +1,37 @@
 <ng-container *ngIf="authUser$ | async as user">
 
-  <div class="d-flex w-100 justify-content-between align-items-center mb-1">
-    <h4>Students</h4>
-    <small>{{user.FullName}} ({{user.GetHighestPermissions}})</small>
-  </div>
-
-  <div class="d-flex w-100 justify-content-between align-items-center">
-    <div class="col">
-      <div class="input-group mb-3">
-        <span class="input-group-text" id="searchInput">Search</span>
-        <input type="text" class="form-control" [(ngModel)]="searchTerm" name="nameFilter"
-          aria-describedby="searchInput">
-      </div>
-    </div>
-    <button class="btn mb-3" data-bs-toggle="collapse" data-bs-target="#collapseFilter">
-      <i class="fas fa-filter"></i>
-    </button>
-    <button class="btn mb-3" [disabled]="!user.IsAdmin" data-bs-toggle="collapse" data-bs-target="#collapseAddStudent">
-      <i class="fas fa-user-plus"></i>
-    </button>
-  </div>
-
-  <ng-container *ngIf="user.IsAdmin">
-    <div class="row collapse mb-3" id="collapseAddStudent">
-      <div class="col">
-         <app-add-student [authUser]="user"></app-add-student>
-      </div>
-    </div>
-  </ng-container>
-
-  <div class="row collapse mb-3" id="collapseFilter">
-    <div class="col">
-      <h5>Filters</h5>
-
-      <div class="card">
-        <div class="card-body">
-
-          <form [formGroup]="filterForm" (ngSubmit)="SubmitFilterForm()">
-
-            <h6>Locale</h6>
-
-            <div class="d-flex justify-content-between">
-
-              <div class="input-group mb-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="FormCheckbox_churchrd"
-                    formControlName="FormCheckbox_churchrd">
-                  <label class="form-check-label" for="FormCheckbox_churchrd">
-                    Church Rd
-                  </label>
-                </div>
-              </div>
-              <div class="input-group mb-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="FormCheckbox_coneyboro"
-                    formControlName="FormCheckbox_coneyboro">
-                  <label class="form-check-label" for="FormCheckbox_coneyboro">
-                    Coneyboro
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="input-group mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="FormCheckbox_glebelands"
-                  formControlName="FormCheckbox_glebelands">
-                <label class="form-check-label" for="FormCheckbox_glebelands">
-                  Glebelands
-                </label>
-              </div>
-            </div>
-
-            <h6>Status</h6>
-
-            <div class="d-flex justify-content-between">
-
-              <div class="input-group mb-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="FormCheckbox_archived"
-                    formControlName="FormCheckbox_archived">
-                  <label class="form-check-label" for="FormCheckbox_archived">
-                    Archived Students
-                  </label>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="d-flex justify-content-between">
-              <button type="submit" class="btn btn-primary" [disabled]="filterForm.invalid">Apply filters</button>
-              <small class="text-center mt-3" data-bs-toggle="collapse"
-                data-bs-target="#collapseFilter"><b>Close</b></small>
-            </div>
-          </form>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <app-view-nav
+  [authUser]="user"
+  [title]="'Students'"
+  [pageType]="PageType"
+  (searchTermState)="SearchTermChanged($event)"></app-view-nav>
 
   <div class="row">
-    <div class="col">
-      <app-students [studentList]="students$ | async | collectionFilter: searchTerm : 'FullName'"></app-students>
+
+    <app-sidebar
+    [authUser]="user"
+    [listItems]="students | async"
+    [searchTerm]="searchTerm"
+    [filterProperty]="'FullName'"
+    (selectedObject)="GetSelectedStudent($event)"
+    (selectedFilters)="ReceiveFilters($event)"></app-sidebar>
+
+    <div [class]="(sidebarState | async) ? 'col' : 'col offset-sm-3 offset-md-4'">
+      <div class="row">
+        <ng-container *ngIf="user.IsAdmin">
+          <div class="row collapse mb-3" id="collapseAddClicked">
+            <div class="col">
+              <app-add-student [authUser]="user"></app-add-student>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="row">
+        <ng-container *ngIf="selectedStudent != undefined">
+          <app-student-item [student]="selectedStudent" [authUser]="user"></app-student-item>
+        </ng-container>
+      </div>
     </div>
   </div>
-
 </ng-container>
+

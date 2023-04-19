@@ -11,6 +11,8 @@
     <app-sidebar
     [authUser]="user"
     [listItems]="users | async"
+    [searchTerm]="searchTerm"
+    [filterProperty]="'FullName'"
     (selectedObject)="GetSelectedUser($event)"
     (selectedFilters)="ReceiveFilters($event)"></app-sidebar>
 

@@ -1,5 +1,5 @@
 export interface ListFilter {
-  offices?: string[],
+  offices: string[],
   rooms?: string[],
   includeAdmin?: boolean,
   includeArchived?: boolean,

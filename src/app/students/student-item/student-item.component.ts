@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Student } from 'src/app/models/students';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-student-item',
@@ -8,6 +9,7 @@ import { Student } from 'src/app/models/students';
 })
 export class StudentItemComponent implements OnInit {
 
+  @Input() authUser!: User;
   @Input() student!: Student
 
   constructor() { }
