@@ -15,10 +15,18 @@
             <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseFilter">
               <i class="fas fa-filter"></i>
             </button>
-            <button class="btn" (click)="SetSidebarState(!hideSidebar)">
-              <i class="fas fa-angle-double-left" *ngIf="!hideSidebar"></i>
-              <i class="fas fa-angle-double-right" *ngIf="hideSidebar"></i>
+
+            <button class="btn" *ngIf="sidebarState | async as showSidebar; else sidebarStateFalse"
+            (click)="SetSidebarState(false)">
+              <i class="fas fa-angle-double-right"></i>
             </button>
+            <ng-template #sidebarStateFalse>
+              <button class="btn"
+              (click)="SetSidebarState(true)">
+                <i class="fas fa-angle-double-left"></i>
+              </button>
+            </ng-template>
+
           </div>
         </div>
         <div class="col">

@@ -6,6 +6,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { ListFilter } from 'src/app/models/filters';
 import { PageType } from 'src/app/models/web';
+import { ViewStateService } from 'src/app/services/view-state.service';
 
 @Component({
   selector: 'app-user-base',
@@ -18,18 +19,19 @@ export class UserBaseComponent implements OnInit {
   public authUser$: Observable<any>;
   public users!: Observable<User[] | null>;
   public searchTerm!: string;
-  public hideSidebar = false;
+  public sidebarState!: Observable<boolean>;
   public selectedUser: User | undefined;
   public PageType = PageType.User;
 
   private filter!: ListFilter;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private viewStateService: ViewStateService) {
 
     this.authUser$ = this.userService.LoggedInUser;
    }
 
   ngOnInit(): void {
+    this.sidebarState = this.viewStateService.getSidebarState();
   }
 
   public GetSelectedUser($event: any): void {
@@ -38,10 +40,6 @@ export class UserBaseComponent implements OnInit {
 
   public SearchTermChanged($event: any): void {
     this.searchTerm = $event;
-  }
-
-  public SidebarChanged($event: any): void {
-    this.hideSidebar = $event;
   }
 
   public ReceiveFilters($event: any):void {

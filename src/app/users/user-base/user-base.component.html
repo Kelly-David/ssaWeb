@@ -4,19 +4,17 @@
 [authUser]="user"
 [title]="'Staff'"
 [pageType]="PageType"
-(sidebarState)="SidebarChanged($event)"
 (searchTermState)="SearchTermChanged($event)"></app-view-nav>
 
   <div class="row">
 
     <app-sidebar
     [authUser]="user"
-    [hidden]="hideSidebar"
     [listItems]="users | async"
     (selectedObject)="GetSelectedUser($event)"
     (selectedFilters)="ReceiveFilters($event)"></app-sidebar>
 
-    <div [class]="hideSidebar ? 'col' : 'col offset-sm-3 offset-md-4'">
+    <div [class]="(sidebarState | async) ? 'col' : 'col offset-sm-3 offset-md-4'">
       <div class="row">
         <ng-container *ngIf="user.IsAdmin">
           <div class="row collapse mb-3" id="collapseAddClicked">
@@ -28,7 +26,7 @@
       </div>
       <div class="row">
         <ng-container *ngIf="selectedUser != undefined">
-          <app-user-item [user]="selectedUser"></app-user-item>
+          <app-user-item [user]="selectedUser" [authUser]="user"></app-user-item>
         </ng-container>
       </div>
     </div>

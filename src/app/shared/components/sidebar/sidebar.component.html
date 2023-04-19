@@ -1,5 +1,4 @@
-<ng-container *ngIf="!hidden">
-  <div class="col-sm-3 col-md-4 side-content">
+  <div [class]="!(sidebarState | async) ? 'col-sm-3 col-md-4 side-content' : 'd-none'">
 
     <app-list-filter [authUser]="authUser" (filterChanged)="ReceiveSelectedFilters($event)"></app-list-filter>
 
@@ -11,4 +10,3 @@
     </div>
 
   </div>
-</ng-container>

@@ -1,16 +1,20 @@
-<ng-container *ngIf="user != undefined">
+<ng-container *ngIf="user != undefined && authUser != undefined">
 
-  <div class="d-flex justify-content-between">
-    <h2>{{user.FullName}}</h2>
+  <div class="d-flex justify-content-between mb-3">
+    <div class="d-flex align-items-start flex-column">
+      <small>Staff details</small>
+      <h2>{{user.FullName}}</h2>
+    </div>
     <div class="d-flex align-items-end flex-column">
       <small>{{user.Id | uppercase}}</small>
       <small>{{user.Email | lowercase}}</small>
     </div>
   </div>
 
-  <h5>Vitals</h5>
+
   <div class="card mb-3">
     <div class="card-body">
+      <h5>Vitals</h5>
       <dl class="row">
 
         <dt class="col-sm-3">Role</dt>
@@ -25,12 +29,15 @@
         <dd class="col-sm-9">{{(user.LockedOut).toString() | titlecase}}</dd>
 
       </dl>
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" [disabled]="!authUser.IsAdmin">Edit vitals</button>
+      </div>
     </div>
   </div>
 
-  <h5>Audit Info</h5>
   <div class="card">
     <div class="card-body">
+      <h5>Audit Info</h5>
       <dl class="row">
 
         <dt class="col-sm-3">Created DateTime</dt>

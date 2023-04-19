@@ -8,6 +8,7 @@ import { User } from '../../models/user';
 })
 export class UserItemComponent implements OnChanges {
 
+  @Input() authUser!: User;
   @Input() user!: User;
 
   constructor() { }

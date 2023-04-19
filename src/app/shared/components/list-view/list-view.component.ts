@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Room } from 'src/app/models/room';
 import { Student } from 'src/app/models/students';
 import { User } from 'src/app/models/user';

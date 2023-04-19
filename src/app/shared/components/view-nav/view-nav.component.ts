@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { PageType } from 'src/app/models/web';
+import { ViewStateService } from 'src/app/services/view-state.service';
 
 @Component({
   selector: 'app-view-nav',
@@ -13,22 +15,19 @@ export class ViewNavComponent implements OnInit {
   @Input() title!: string;
   @Input() pageType!: PageType;
 
-  @Output() sidebarState = new EventEmitter<boolean>();
   @Output() searchTermState = new EventEmitter<string>();
 
-  public hideSidebar: boolean = false;
+  public sidebarState!: Observable<boolean>;
   public searchTerm: string = '';
 
-  constructor() { }
+  constructor(private viewStateService: ViewStateService) { }
 
   ngOnInit(): void {
-
-
+    this.sidebarState = this.viewStateService.getSidebarState();
   }
 
   public SetSidebarState(state: boolean): void {
-    this.hideSidebar = state;
-    this.sidebarState.emit(this.hideSidebar);
+    this.viewStateService.setSidebarState(state);
   }
 
   public SetSearchTerm(term: any): void {
