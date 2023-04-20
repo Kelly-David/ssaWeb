@@ -11,7 +11,7 @@
   </div>
 
 
-  <div class="card mb-3">
+  <div class="card mb-3" *ngIf="(vitalsEditMode | async) == false">
     <div class="card-body">
       <div class="card-title">
       <h5>Vitals</h5>
@@ -41,10 +41,12 @@
 
       </dl>
       <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-primary" [disabled]="!authUser.IsAdmin">Edit vitals</button>
+        <button type="button" class="btn btn-primary" [disabled]="!authUser.IsAdmin" (click)="SetEvitalsEditMode(true)">Edit vitals</button>
       </div>
     </div>
   </div>
+
+  <app-edit-student *ngIf="(vitalsEditMode | async) == true" [authUser]="authUser" [student]="student"></app-edit-student>
 
   <div class="card">
     <div class="card-body">
