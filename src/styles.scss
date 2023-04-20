@@ -75,11 +75,16 @@ p {
 }
 
 .card {
-  h5 {
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+  .card-title {
     border-bottom: 1px solid #bebec9;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+
+    h5 {
+    }
+
   }
+
 }
 
 .list-group-item {

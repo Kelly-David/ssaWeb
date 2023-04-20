@@ -14,7 +14,9 @@
 
   <div class="card mb-3">
     <div class="card-body">
-      <h5>Vitals</h5>
+      <div class="card-title">
+        <h5>Vitals</h5>
+      </div>
       <dl class="row">
 
         <dt class="col-sm-3">Role</dt>
@@ -37,8 +39,13 @@
 
   <div class="card">
     <div class="card-body">
-      <h5>Audit Info</h5>
-      <dl class="row">
+      <div class="card-title d-flex justify-content-between align-items-center">
+        <h5>Audit Info</h5>
+        <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseAudit">
+          <small><i class="fas fa-chevron-circle-down"></i></small>
+        </button>
+      </div>
+      <dl class="row collapse" id="collapseAudit">
 
         <dt class="col-sm-3">Created DateTime</dt>
         <dd class="col-sm-9">{{user.GetCreatedDateString}}</dd>
@@ -48,6 +55,7 @@
 
         <dt class="col-sm-3">Last LoggedIn</dt>
         <dd class="col-sm-9">{{user.GetLastLoggedInDateString}}</dd>
+
 
       </dl>
     </div>

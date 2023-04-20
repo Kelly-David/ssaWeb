@@ -1,38 +1,69 @@
-<ng-container *ngIf="student != undefined">
-  <dl class="row">
+<ng-container *ngIf="student != undefined && authUser != undefined">
 
-    <dt class="col-sm-3">Id</dt>
-    <dd class="col-sm-9">{{student.Id | uppercase}}</dd>
+  <div class="d-flex justify-content-between mb-3">
+    <div class="d-flex align-items-start flex-column">
+      <small>Student details</small>
+      <h2>{{student.FullName}}</h2>
+    </div>
+    <div class="d-flex align-items-end flex-column">
+      <small>{{student.Id | uppercase}}</small>
+    </div>
+  </div>
 
-    <dt class="col-sm-3">First Name</dt>
-    <dd class="col-sm-9">{{student.FirstName}}</dd>
 
-    <dt class="col-sm-3">Last Name</dt>
-    <dd class="col-sm-9">{{student.LastName}}</dd>
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="card-title">
+      <h5>Vitals</h5>
+      </div>
+      <dl class="row">
 
-    <dt class="col-sm-3">Gender</dt>
-    <dd class="col-sm-9">{{student.Gender}}</dd>
+        <dt class="col-sm-3">Gender</dt>
+        <dd class="col-sm-9">{{student.Gender}}</dd>
 
-    <dt class="col-sm-3">DateOfBirth</dt>
-    <dd class="col-sm-9">{{student.DateOfBirthString}}</dd>
+        <dt class="col-sm-3">Date of birth</dt>
+        <dd class="col-sm-9">{{student.DateOfBirthString}}</dd>
 
-    <dt class="col-sm-3">Toilet Trained</dt>
-    <dd class="col-sm-9">{{(student.IsToiletTrained).toString() | titlecase}}</dd>
+        <dt class="col-sm-3">Toilet trained</dt>
+        <dd class="col-sm-9">{{student.ToiletTrained}}</dd>
 
-    <dt class="col-sm-3">Classroom</dt>
-    <dd class="col-sm-9">{{student.Room ?? '(Unassigned)' | titlecase}}</dd>
+        <dt class="col-sm-3">Non-sleeper</dt>
+        <dd class="col-sm-9">{{student.NonSleeper}}</dd>
 
-    <dt class="col-sm-3">Locale</dt>
-    <dd class="col-sm-9">{{student.Office | titlecase}}</dd>
+        <dt class="col-sm-3">Part-time</dt>
+        <dd class="col-sm-9">{{student.PartTime}}</dd>
 
-    <dt class="col-sm-3">Created DateTime</dt>
-    <dd class="col-sm-9">{{student.GetCreatedDateString}}</dd>
+        <dt class="col-sm-3">Classroom</dt>
+        <dd class="col-sm-9">{{student.Room ?? '(Unassigned)' | titlecase}}</dd>
 
-    <dt class="col-sm-3">Updated DateTime</dt>
-    <dd class="col-sm-9">{{student.GetUpdatedDateString}}</dd>
+        <dt class="col-sm-3">Service</dt>
+        <dd class="col-sm-9">{{student.Office | titlecase}}</dd>
 
-    <dt class="col-sm-3">Archived</dt>
-    <dd class="col-sm-9">{{(student.IsArchived).toString() | titlecase}}</dd>
+      </dl>
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" [disabled]="!authUser.IsAdmin">Edit vitals</button>
+      </div>
+    </div>
+  </div>
 
-  </dl>
+  <div class="card">
+    <div class="card-body">
+      <div class="card-title d-flex justify-content-between align-items-center">
+        <h5>Audit Info</h5>
+        <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseAudit">
+          <small><i class="fas fa-chevron-circle-down"></i></small>
+        </button>
+      </div>
+      <dl class="row collapse" id="collapseAudit">
+
+        <dt class="col-sm-3">Created</dt>
+        <dd class="col-sm-9">{{student.GetCreatedDateString}}</dd>
+
+        <dt class="col-sm-3">Updated</dt>
+        <dd class="col-sm-9">{{student.GetUpdatedDateString}}</dd>
+
+      </dl>
+    </div>
+  </div>
+
 </ng-container>

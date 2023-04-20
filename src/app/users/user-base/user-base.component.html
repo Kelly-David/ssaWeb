@@ -14,7 +14,8 @@
     [searchTerm]="searchTerm"
     [filterProperty]="'FullName'"
     (selectedObject)="GetSelectedUser($event)"
-    (selectedFilters)="ReceiveFilters($event)"></app-sidebar>
+    (selectedFilters)="ReceiveFilters($event)"
+    [class]="!(sidebarState | async) ? 'col-sm-4 side-content' : 'd-none'"></app-sidebar>
 
     <div [class]="(sidebarState | async) ? 'col' : 'col offset-sm-3 offset-md-4'">
       <div class="row">

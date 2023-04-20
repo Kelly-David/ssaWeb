@@ -57,11 +57,11 @@ export class Student implements Base, IStudent {
     return this.UpdatedDateTime != undefined ? (this.UpdatedDateTime.toDate() as Date).toUTCString() : this.GetCreatedDateString;
   }
 
-  public get FullName(): string {
+  get FullName(): string {
     return this.FirstName + ' ' + this.LastName;
   }
 
-  public get DateOfBirthString(): string {
+  get DateOfBirthString(): string {
 
     let date = new Date(this.DateOfBirth);
     let dateOfBirthString = (date.getDay() < 10 ? '0' + date.getDay() : date.getDay()) as string;
@@ -70,10 +70,18 @@ export class Student implements Base, IStudent {
     return dateOfBirthString;
   }
 
+  get ToiletTrained(): string { return this.BoolAnswer(this.IsToiletTrained); }
+  get PartTime(): string { return this.BoolAnswer(this.IsPartTime); }
+  get NonSleeper(): string { return this.BoolAnswer(this.IsNonSleeper); }
+
   get ToPlainObj(): object {
     let obj = this as any;
     Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : {});
     return Object.assign({}, obj);
+  }
+
+  private BoolAnswer(val: boolean): string {
+    return val ? 'Yes' : 'No';
   }
 }
 

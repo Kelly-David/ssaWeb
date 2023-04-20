@@ -1,4 +1,4 @@
-  <div [class]="!(sidebarState | async) ? 'col-sm-3 col-md-4 side-content' : 'd-none'">
+  <div>
 
     <app-list-filter [authUser]="authUser" (filterChanged)="ReceiveSelectedFilters($event)"></app-list-filter>
 
