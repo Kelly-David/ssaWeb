@@ -15,7 +15,6 @@ export class SidebarComponent implements OnInit {
   @Input() filterProperty!: string;
   @Input() listItems!: any[] | null;
 
-  @Output() selectedObject = new EventEmitter<any>();
   @Output() selectedFilters = new EventEmitter<any>();
 
   public sidebarState!: Observable<boolean>;
@@ -24,10 +23,6 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     this.sidebarState = this.viewStateService.getSidebarState();
-  }
-
-  ReceiveSelectedObject(event: any) {
-    this.selectedObject.emit(event);
   }
 
   ReceiveSelectedFilters(event: any) {

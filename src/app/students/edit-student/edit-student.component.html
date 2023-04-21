@@ -6,6 +6,8 @@
         <h5>Edit Vitals</h5>
       </div>
 
+      <app-alert-info [text]="info"></app-alert-info>
+
       <form class="mb-3" [formGroup]="studentForm" (ngSubmit)="SubmitStudentForm()">
 
         <div class="input-group mb-3">
@@ -110,7 +112,8 @@
         </div>
 
         <div class="d-flex justify-content-between">
-          <button type="submit" class="btn btn-primary" [disabled]="studentForm.invalid">Save</button>
+          <button type="submit" class="btn btn-primary"
+          [disabled]="!(studentForm.valid && studentForm.dirty)">Save</button>
 
           <small class="text-center mt-3" (click)="SetEvitalsEditMode(false)"><b>Cancel</b></small>
         </div>

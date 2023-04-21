@@ -20,7 +20,7 @@ export class StudentsBaseComponent implements OnInit {
   public students!: Observable<Student[] | null>;
   public searchTerm!: string;
   public sidebarState!: Observable<boolean>;
-  public selectedStudent: Student | undefined;
+  public selectedStudent!: Observable<any>;
   public PageType = PageType.User;
 
   private filter!: ListFilter;
@@ -31,14 +31,11 @@ export class StudentsBaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.sidebarState = this.viewStateService.getSidebarState();
+    this.selectedStudent = this.viewStateService.getSelectedStudent();
   }
 
   private FetchStudents(filter: ListFilter) {
     this.students = this.studentService.GetStudentsAsync(filter.offices, filter.includeArchived);
-  }
-
-  public GetSelectedStudent($event: any): void {
-    this.selectedStudent = $event;
   }
 
   public SearchTermChanged($event: any): void {

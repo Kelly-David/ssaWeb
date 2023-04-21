@@ -3,6 +3,7 @@ import { Room } from 'src/app/models/room';
 import { Student } from 'src/app/models/students';
 import { User } from 'src/app/models/user';
 import { ListItem } from 'src/app/models/web';
+import { ViewStateService } from 'src/app/services/view-state.service';
 
 @Component({
   selector: 'app-list-view',
@@ -12,11 +13,10 @@ import { ListItem } from 'src/app/models/web';
 export class ListViewComponent implements OnChanges {
 
   @Input() inputItems!: any[];
-  @Output() SelectedItemChange = new EventEmitter<any>();
 
   public listItems!: ListItem[];
 
-  constructor() { }
+  constructor(private viewStateService: ViewStateService) { }
 
   ngOnChanges(): void {
 
@@ -40,10 +40,21 @@ export class ListViewComponent implements OnChanges {
         throw new Error('Unknown item type');
       }
     });
+
+    if (this.listItems?.length > 0) {
+      this.SetSelectedItem(this.listItems[0].Object);
+    }
   }
 
   SetSelectedItem(object: User | Student | Room | any) {
-    this.SelectedItemChange.emit(object);
+
+    if (object instanceof Student) {
+      return this.viewStateService.setSelectedStudent(object);
+    }
+
+    if (object instanceof User) {
+      return this.viewStateService.setSelectedUser(object);
+    }
   }
 
 }

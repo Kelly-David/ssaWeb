@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Student } from 'src/app/models/students';
+import { IStudent, Student } from 'src/app/models/students';
 import { User } from 'src/app/models/user';
 import { StudentService } from 'src/app/services/student.service';
 import { ViewStateService } from '../../services/view-state.service';
@@ -18,43 +18,44 @@ export class EditStudentComponent implements OnInit {
 
   public studentForm: FormGroup;
   public vitalsEditMode!: Observable<boolean>;
+  public info: string = "";
 
   constructor(private studentService: StudentService, private formBuilder: FormBuilder, private viewStateService: ViewStateService) {
 
     this.studentForm = formBuilder.group({
-      'Form_FirstName' : [{value: '', disabled: false}, [
+      'Form_FirstName': [{ value: '', disabled: false }, [
         Validators.required,
         Validators.minLength(3),
         Validators.maxLength(30),
         Validators.pattern('^[a-zA-Zа]+$')
       ]],
-      'Form_LastName' : [{value: '', disabled: false}, [
+      'Form_LastName': [{ value: '', disabled: false }, [
         Validators.required,
         Validators.minLength(3),
         Validators.maxLength(30),
         Validators.pattern('^[a-zA-Zа]+$')
       ]],
-      'Form_DateOfBirth' : [{value: '', disabled: false}, [
+      'Form_DateOfBirth': [{ value: '', disabled: false }, [
         Validators.required
       ]],
-      'Form_Gender_Boy': [{value: '', disabled: false}],
-      'Form_Gender_Grl': [{value: '', disabled: false}],
-      'Form_IsToiletTrained' : [{value: '', disabled: false}],
-      'Form_IsNonSleeper' : [{value: '', disabled: false}],
-      'Form_IsPartTime' : [{value: '', disabled: false}],
-      'Form_Office_ChurchRd' : [{value: '', disabled: false}],
-      'Form_Office_Coneyboro' : [{value: '', disabled: false}],
-      'Form_Office_Glebelands' : [{value: '', disabled: false}]
+      'Form_Gender_Boy': [{ value: '', disabled: false }],
+      'Form_Gender_Grl': [{ value: '', disabled: false }],
+      'Form_IsToiletTrained': [{ value: '', disabled: false }],
+      'Form_IsNonSleeper': [{ value: '', disabled: false }],
+      'Form_IsPartTime': [{ value: '', disabled: false }],
+      'Form_Office_ChurchRd': [{ value: '', disabled: false }],
+      'Form_Office_Coneyboro': [{ value: '', disabled: false }],
+      'Form_Office_Glebelands': [{ value: '', disabled: false }]
     },
-    {
-      validators: [this.ValidateOfficeSelection.bind(this), this.ValidateGenderSelection.bind(this)],
-      updateOn: 'change'
-    });
-   }
+      {
+        validators: [this.ValidateOfficeSelection.bind(this), this.ValidateGenderSelection.bind(this)],
+        updateOn: 'change'
+      });
+  }
 
   ngOnInit(): void {
 
-    this.vitalsEditMode  =this.viewStateService.getVitalsEditMode();
+    this.vitalsEditMode = this.viewStateService.getVitalsEditMode();
 
     if (this.student != undefined) {
 
@@ -74,28 +75,8 @@ export class EditStudentComponent implements OnInit {
     }
   }
 
-  private ValidateOfficeSelection(formGroup: AbstractControl) {
-    if (formGroup.get('Form_Office_ChurchRd')?.value == true) {
-      return null;
-    }
-    if (formGroup.get('Form_Office_Coneyboro')?.value == true) {
-      return null;
-    }
-    if (formGroup.get('Form_Office_Glebelands')?.value == true) {
-      return null;
-    }
-    return { IsValid: false };
-  }
 
-  private ValidateGenderSelection(formGroup: AbstractControl) {
-    if (formGroup.get('Form_Gender_Boy')?.value == true) {
-      return null;
-    }
-    if (formGroup.get('Form_Gender_Grl')?.value == true) {
-      return null;
-    }
-    return { IsValid: false };
-  }
+  /// Public methods ----------------------------------------------------------------
 
   public ToggleGender(selected: string): void {
     if (selected == 'boy') {
@@ -126,8 +107,80 @@ export class EditStudentComponent implements OnInit {
     return this.viewStateService.setVitalsEditMode(val);
   }
 
-  public SubmitStudentForm() {
+  public async SubmitStudentForm() {
 
+    const selectedOffice = this.GetSelectedOffice();
+    const selectedGender = this.GetSelectedGender();
+
+    var updates = {
+      FirstName: this.Form_FirstName,
+      LastName: this.Form_LastName,
+      DateOfBirth: this.Form_DateOfBirth,
+      Office: selectedOffice,
+      IsToiletTrained: this.Form_IsToiletTrained,
+      Gender: selectedGender,
+      IsNonSleeper: this.Form_IsNonSleeper,
+      IsPartTime: this.Form_IsPartTime,
+      UpdatedDateTime: new Date()
+    } as IStudent;
+
+    if (await this.studentService.UpdateStudentAsync(this.student.Id, updates)) {
+      this.info = 'Student successfully updated;';
+      this.viewStateService.setVitalsEditMode(false);
+    }
+  }
+
+
+  /// Form getters -------------------------------------------------------------------
+
+  get Form_FirstName(): string { return this.studentForm.get('Form_FirstName')?.value; }
+  get Form_LastName(): string { return this.studentForm.get('Form_LastName')?.value; }
+  get Form_DateOfBirth(): string { return this.studentForm.get('Form_DateOfBirth')?.value; }
+  get Form_Gender_Boy(): boolean { return this.studentForm.get('Form_Gender_Boy')?.value; }
+  get Form_Gender_Grl(): boolean { return this.studentForm.get('Form_Gender_Grl')?.value; }
+  get Form_IsToiletTrained(): boolean { return this.studentForm.get('Form_IsToiletTrained')?.value; }
+  get Form_IsNonSleeper(): boolean { return this.studentForm.get('Form_IsNonSleeper')?.value; }
+  get Form_IsPartTime(): boolean { return this.studentForm.get('Form_IsPartTime')?.value; }
+  get Form_Office_ChurchRd(): boolean { return this.studentForm.get('Form_Office_ChurchRd')?.value; }
+  get Form_Office_Coneyboro(): boolean { return this.studentForm.get('Form_Office_Coneyboro')?.value; }
+  get Form_Office_Glebelands(): boolean { return this.studentForm.get('Form_Office_Glebelands')?.value; }
+
+  /// Private Methods ----------------------------------------------------------------
+
+  private ValidateOfficeSelection(formGroup: AbstractControl) {
+    if (formGroup.get('Form_Office_ChurchRd')?.value == true) {
+      return null;
+    }
+    if (formGroup.get('Form_Office_Coneyboro')?.value == true) {
+      return null;
+    }
+    if (formGroup.get('Form_Office_Glebelands')?.value == true) {
+      return null;
+    }
+    return { IsValid: false };
+  }
+
+  private ValidateGenderSelection(formGroup: AbstractControl) {
+    if (formGroup.get('Form_Gender_Boy')?.value == true) {
+      return null;
+    }
+    if (formGroup.get('Form_Gender_Grl')?.value == true) {
+      return null;
+    }
+    return { IsValid: false };
+  }
+
+  private GetSelectedGender(): string | undefined {
+    if (this.Form_Gender_Boy) { return 'Boy'; }
+    if (this.Form_Gender_Grl) { return 'Girl'; }
+    return undefined;
+  }
+
+  private GetSelectedOffice(): string | undefined {
+    if (this.Form_Office_ChurchRd) { return 'churchrd'; }
+    if (this.Form_Office_Coneyboro) { return 'coneyboro'; }
+    if (this.Form_Office_Glebelands) { return 'glebelands'; }
+    return undefined;
   }
 
 }

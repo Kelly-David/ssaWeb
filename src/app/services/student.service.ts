@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Strings } from '../constants/strings';
-import { Firestore, QueryConstraint, addDoc, collection, collectionData, doc, query, setDoc, where } from '@angular/fire/firestore';
+import { Firestore, QueryConstraint, addDoc, collection, collectionData, doc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
-import { Student } from '../models/students';
+import { IStudent, Student } from '../models/students';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +43,19 @@ export class StudentService {
 
     try {
       await setDoc(docRef, <Student>student.ToPlainObj);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  public async UpdateStudentAsync(id: string, student: IStudent): Promise<boolean> {
+
+    const docRef = doc(this.firestore, Strings.StudentCollection, id);
+
+    try {
+      await updateDoc(docRef, {...student});
       return true;
     } catch (error) {
       console.log(error);

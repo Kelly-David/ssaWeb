@@ -13,11 +13,10 @@
     [listItems]="students | async"
     [searchTerm]="searchTerm"
     [filterProperty]="'FullName'"
-    (selectedObject)="GetSelectedStudent($event)"
     (selectedFilters)="ReceiveFilters($event)"
-    [class]="!(sidebarState | async) ? 'col-sm-4 side-content' : 'd-none'"></app-sidebar>
+    [class]="(sidebarState | async) ? 'col-sm-4 side-content' : 'd-none'"></app-sidebar>
 
-    <div [class]="(sidebarState | async) ? 'col' : 'col offset-sm-4'">
+    <div [class]="(sidebarState | async) ? 'col offset-sm-4' : 'col-lg-8 offset-lg-2'">
       <div class="row">
         <ng-container *ngIf="user.IsAdmin">
           <div class="row collapse mb-3" id="collapseAddClicked">
@@ -28,8 +27,8 @@
         </ng-container>
       </div>
       <div class="row">
-        <ng-container *ngIf="selectedStudent != undefined">
-          <app-student-item [student]="selectedStudent" [authUser]="user"></app-student-item>
+        <ng-container *ngIf="(selectedStudent | async)">
+          <app-student-item [student]="selectedStudent | async" [authUser]="user"></app-student-item>
         </ng-container>
       </div>
     </div>

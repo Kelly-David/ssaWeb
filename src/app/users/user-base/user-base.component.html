@@ -15,9 +15,9 @@
     [filterProperty]="'FullName'"
     (selectedObject)="GetSelectedUser($event)"
     (selectedFilters)="ReceiveFilters($event)"
-    [class]="!(sidebarState | async) ? 'col-sm-4 side-content' : 'd-none'"></app-sidebar>
+    [class]="(sidebarState | async) ? 'col-sm-4 side-content' : 'd-none'"></app-sidebar>
 
-    <div [class]="(sidebarState | async) ? 'col' : 'col offset-sm-3 offset-md-4'">
+    <div [class]="(sidebarState | async) ? 'col offset-sm-4' : 'col-lg-8 offset-lg-2'">
       <div class="row">
         <ng-container *ngIf="user.IsAdmin">
           <div class="row collapse mb-3" id="collapseAddClicked">
