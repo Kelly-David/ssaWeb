@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { Strings } from '../constants/strings';
-import { Firestore, QueryConstraint, addDoc, collection, collectionData, doc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { DocumentSnapshot, Firestore, QueryConstraint, addDoc, arrayUnion, collection, collectionData, doc, getDoc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import { IStudent, Student } from '../models/students';
 
@@ -14,7 +14,7 @@ export class StudentService {
 
   public GetStudentsAsync(offices: string[], isArchived: boolean = false): Observable<Student[]> {
 
-    const studentCollection = collection(this.firestore, Strings.StudentCollection);
+    const studentCollection = collection(this.firestore, Strings.StudentsCollection);
 
     var constraints: QueryConstraint[] = []
 
@@ -31,9 +31,21 @@ export class StudentService {
     }));
   }
 
+  public GetStudentAsync(id: string): Observable<Student> {
+
+    const configDocument = doc(this.firestore, Strings.StudentsCollection, id);
+
+    const docSnap = getDoc(configDocument);
+
+    return from(docSnap.then((value: DocumentSnapshot) => {
+      let document = value.data() as any;
+      return new Student(document as Student);
+    }));
+  }
+
   public async InsertStudentAsync(student: Student): Promise<boolean> {
 
-    const collectionRef = collection(this.firestore, Strings.StudentCollection);
+    const collectionRef = collection(this.firestore, Strings.StudentsCollection);
 
     const docRef = doc(collectionRef);
 
@@ -52,10 +64,20 @@ export class StudentService {
 
   public async UpdateStudentAsync(id: string, student: IStudent): Promise<boolean> {
 
-    const docRef = doc(this.firestore, Strings.StudentCollection, id);
+    const docRef = doc(this.firestore, Strings.StudentsCollection, id);
+    const auditDocRef = doc(this.firestore, Strings.StudentsHistoryCollection, id)
 
     try {
+
+      var before = (await getDoc(docRef)).data();
+
       await updateDoc(docRef, {...student});
+
+      await setDoc(auditDocRef, {
+        Id: id,
+        History: arrayUnion(before)
+      }, { merge: true });
+
       return true;
     } catch (error) {
       console.log(error);
